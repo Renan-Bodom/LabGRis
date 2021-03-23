@@ -25,7 +25,14 @@ SECRET_KEY = 'dg)*@7p@#c$5=um@g)3y-lothpa)tg&1w(6x&ez_cs__1w0g2s'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    '127.0.0.1',
+    '192.168.0.100',
+    'renanbodom.pythonanywhere.com',
+    'LabGRisUFABC.pythonanywhere.com',
+    '.pythonanywhere.com',
+    '.googleapis.com',
+    ]
 
 
 # Application definition
@@ -73,6 +80,22 @@ WSGI_APPLICATION = 'LabGRis.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
+
+#--------------------------------Ativar aqui para conectar no banco------------------
+'''
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': os.environ.get('DB_NAME', 'labgris'),
+        'USER': os.environ.get('DB_USER', 'labgris'),
+        'PASSWORD': os.environ.get('DB_PASS', 'lab1234'),
+        'HOST': '192.168.1.106',
+        'PORT': '5432',
+    }
+}
+'''
+
+#--------------------------------Aqui para banco local---------------------
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -103,9 +126,9 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/3.1/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'pt-br'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'America/Sao_Paulo'
 
 USE_I18N = True
 
