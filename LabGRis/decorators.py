@@ -1,4 +1,4 @@
-from pyrebase_settings import db, auth
+from LabGRis.pyrebase_settings import db, auth
 from django.shortcuts import redirect
 
 

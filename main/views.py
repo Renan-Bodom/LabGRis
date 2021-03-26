@@ -1,9 +1,11 @@
 from django.shortcuts import render
+from LabGRis.decorators import validate_session, getSessionUser
 
-# Create your views here.
 
+@validate_session
 def main(request):
     data = {}
-    #data['SessionUser'] = getSessionUser(request)
+    data['SessionUser'] = getSessionUser(request)
     data['context'] = ""
-    return render(request, 'main/main.html')
+
+    return render(request, 'main/main.html', data)

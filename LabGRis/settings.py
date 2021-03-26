@@ -56,6 +56,10 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
+    # Nosso Middleware
+    # 'main.middleware.ValidarLogin',
+    'LabGRis.middleware.getSessionUser'
 ]
 
 ROOT_URLCONF = 'LabGRis.urls'
