@@ -37,3 +37,11 @@ def valida_senha(request):
         return redirect('/usuario/entrar/')
 
     return redirect('/')
+
+
+def sair (request):
+    # for key in request.session.keys():
+    # del request.session[key]
+    clear_session(request)
+
+    return render(request, "users/login.html")
