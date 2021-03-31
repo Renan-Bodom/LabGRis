@@ -13,7 +13,9 @@
     Email: {{ SessionUser.userEmail }}
     <br>
     {% for rowPerfil in SessionUser.perfilUsuarioModulos.list %}
-        {{ rowPerfil.data.nome }}
+        <a href="{{ rowPerfil.data.uri  }}">
+            {{ rowPerfil.data.nome }}
+        </a>
     {% endfor %}
     <br>
     <a href="/usuario/sair/">Sair</a>
