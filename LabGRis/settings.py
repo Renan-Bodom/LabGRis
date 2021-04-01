@@ -47,6 +47,9 @@ INSTALLED_APPS = [
     'main',
     'users',
     'perguntas',
+    'categorias',
+    'modeloFichas',
+    'responderFicha',
 ]
 
 MIDDLEWARE = [

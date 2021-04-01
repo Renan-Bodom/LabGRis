@@ -20,5 +20,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('main.urls'), name='url_main'),
     path('usuario/', include('users.urls'), name='url_users'),
-    path('perguntas/', include('perguntas.urls'), name='url_perguntas')
+    path('perguntas/', include('perguntas.urls'), name='url_perguntas'),
+    path('categorias/', include('categorias.urls'), name='url_categorias'),
+    path('modeloFichas/', include('modeloFichas.urls'), name='url_modeloFichas'),
+    path('fichas/', include('responderFicha.urls'), name='url_responderFicha')
 ]
