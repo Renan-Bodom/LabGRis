@@ -24,19 +24,19 @@
 
     <!-- Sidebar -->
     <div class="w3-sidebar w3-bar-block w3-xxlarge" style="max-width:70px; background-color: #7f0000;">
-        <a class="w3-bar-item w3-button" onclick="w3_open()" style="color: white;"><i class="fa fa-info-circle"></i></a>
         {% for rowPerfil in SessionUser.perfilUsuarioModulos.list %}
             <a href="{{ rowPerfil.data.uri  }}" class="w3-bar-item w3-button" style="color: white;"><i class="fa {{ rowPerfil.data.icon }}"></i></a>
         {% endfor %}
+        <a class="w3-bar-item w3-button" onclick="w3_open()" style="color: white; background-color: #1C1C1C"><i class="fa fa-arrow-right"></i></a>
     </div>
 
     <div style="margin-left:70px">
 
     <div class="w3-sidebar w3-bar-block w3-border-right" style="display:none; background-color: #7f0000; opacity: 0.80;" id="mySidebar">
-        <button onclick="w3_close()" class="w3-bar-item w3-large" style="background-color: #1C1C1C; color: white;"><i class="fa fa-angle-double-left"></i> Fechar</button>
         {% for rowPerfil in SessionUser.perfilUsuarioModulos.list %}
         <a href="{{ rowPerfil.data.uri  }}" class="w3-bar-item w3-button" style="color: white;"><i class="fa {{ rowPerfil.data.icon }}"></i> <font size="4"><b>{{ rowPerfil.data.nome }}</b></font></a>
         {% endfor %}
+        <button onclick="w3_close()" class="w3-bar-item w3-large" style="background-color: #1C1C1C; color: white;"><i class="fa fa-angle-double-left"></i> Fechar</button>
     </div>
     <!-- Fim Sidebar -->
 

@@ -5,10 +5,19 @@
 {% block content %}
 
 <center>
-    <h1 class="teste">Pronto para começar</h1>
 
-    <br><br>
-    Responder Fichas
+    <br>
+
+    <form method="post">
+        {% csrf_token %}
+        {% for ficha in listaFicha %}
+
+            <input type="submit" name="formFichaSelecionada" value="{{ ficha.tituloFicha }}" class="btn btn-secondary">
+
+        {% endfor %}
+    </form>
+
+    <br>
 
 </center>
 
