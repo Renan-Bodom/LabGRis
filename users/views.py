@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 import sys
 from LabGRis.pyrebase_settings import db, auth
+from LabGRis.decorators import validate_session, getSessionUser
 from LabGRis.decorators import clear_session
 
 #@validate_session
@@ -45,3 +46,24 @@ def sair (request):
     clear_session(request)
 
     return render(request, "users/login.html")
+
+@validate_session
+def listaUsers (request):
+    data = {}   # Dicionário DJango
+
+    # Bancos
+    tabelaUsers = "users"
+
+    # Parte do decorators de login
+    data['SessionUser'] = getSessionUser(request)
+    data['context'] = ""
+
+    #  Carrega usuário já cadastrado
+    usuariosSalvos = db.child(tabelaUsers).get()
+    listaUsuarios = []
+    for alt in usuariosSalvos.each():
+        listaUsuarios.append(alt.val())
+
+    data['listaUsuarios'] = listaUsuarios
+
+    return render(request, "users/listarUsers.html", data)
