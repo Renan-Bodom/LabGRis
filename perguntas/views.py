@@ -30,3 +30,13 @@ def perguntas(request):
 
 
     return render(request,'perguntas/perguntas.html', data)
+
+
+def novaPergunta(request):
+    data = {}  # Dicionário DJango
+
+    # Parte do decorators de login
+    data['SessionUser'] = getSessionUser(request)
+    data['context'] = ""
+
+    return render(request,'perguntas/manipularPerguntas.html', data)

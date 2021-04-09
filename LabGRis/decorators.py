@@ -39,7 +39,7 @@ def getSessionUser(request):
             'nomeUsuario': request.session.get('nomeUsuario'),
             'perfilUsuario': request.session.get('perfilUsuario'),
             'perfilUsuarioModulos': retornaAcessos(request)}
-    print(data)
+    #print(data)
     return data
 
 
