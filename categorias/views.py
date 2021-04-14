@@ -28,3 +28,17 @@ def categorias(request):
 
 
     return render(request, 'categorias/categorias.html', data)
+
+
+@validate_session
+def novaCategoria(request):
+    data = {}  # Dicionário DJango
+
+    # Bancos
+    bancoCategoria = "categoria"
+
+    # Parte do decorators de login
+    data['SessionUser'] = getSessionUser(request)
+    data['context'] = ""
+
+    return render(request,'categorias/manipularCategoria.html', data)

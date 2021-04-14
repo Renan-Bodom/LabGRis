@@ -19,3 +19,16 @@ def modeloFichas(request):
     data['listaFicha'] = listaFicha
 
     return render(request, 'modeloFichas/modeloFichas.html', data)
+
+@validate_session
+def novoModeloFicha (request):
+    data = {}  # Dicionário DJango
+
+    # Bancos
+    tabelaBanco = "Templates de Fichas"
+
+    # Parte do decorators de login
+    data['SessionUser'] = getSessionUser(request)
+    data['context'] = ""
+
+    return render(request, "modeloFichas/manipularModeloFicha.html", data)

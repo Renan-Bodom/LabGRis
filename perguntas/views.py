@@ -35,6 +35,9 @@ def perguntas(request):
 def novaPergunta(request):
     data = {}  # Dicionário DJango
 
+    # Bancos
+    bancoPergunta = "perguntas"
+
     # Parte do decorators de login
     data['SessionUser'] = getSessionUser(request)
     data['context'] = ""

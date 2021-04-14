@@ -67,3 +67,16 @@ def listaUsers (request):
     data['listaUsuarios'] = listaUsuarios
 
     return render(request, "users/listarUsers.html", data)
+
+@validate_session
+def novoUsuario (request):
+    data = {}  # Dicionário DJango
+
+    # Bancos
+    tabelaUsers = "users"
+
+    # Parte do decorators de login
+    data['SessionUser'] = getSessionUser(request)
+    data['context'] = ""
+
+    return render(request, "users/manipularUsuario.html", data)
