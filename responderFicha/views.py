@@ -19,3 +19,12 @@ def responderFicha(request):
     data['listaFicha'] = listaFicha
 
     return render(request, 'responderFicha/responderFicha.html', data)
+
+
+def preenchendoFicha(request, fichaSelec):
+    data = {}
+    data['SessionUser'] = getSessionUser(request)
+    data['context'] = ""
+    data['ficha'] = fichaSelec
+
+    return render(request, 'responderFicha/preencherFicha.html', data)

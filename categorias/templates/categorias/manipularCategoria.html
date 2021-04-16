@@ -1,0 +1,44 @@
+{% extends '_layout.html' %}
+{% block title %}Categorias{% endblock %}
+{% block tituloCard %}Nova categoria:{% endblock %}
+
+{% block content %}
+{% load static %}
+
+<center>
+<br>
+<form class="form-signin" method="post" action=".">
+    {% csrf_token %}
+    <div class="form-group">
+        <label>Nome:</label>
+        <input type="text" name="nomeCategoria" class="form-control form-control-lg" value="{{ categoriaParaEditar.0 }}">
+    </div>
+
+    <div class="form-group">
+        <label>ID Categoria Mãe:</label>
+        <input type="text" name="idCategoriaMae" class="form-control form-control-lg" value="{{ categoriaParaEditar.1 }}">
+    </div>
+
+    <div class="form-group">
+        <label>Perguntas:</label>
+        <select class="duallistbox" multiple="multiple" name="SelPerguntas">
+            {% for per in listaPerguntas %}
+                <option>{{ per }}</option>
+            {% endfor %}
+            {% for selec in categoriaParaEditar.2 %}
+                <option selected>{{ selec }}</option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <center>
+        <button type="submit" name="cadastrarCategoria" class="btn btn-primary">Cadastrar</button>
+    </center>
+</form>
+
+
+<br>
+</center>
+
+<script src="{% static 'js/categorias.js' %}"></script>
+{% endblock %}
