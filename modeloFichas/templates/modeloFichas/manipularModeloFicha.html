@@ -3,13 +3,57 @@
 {% block tituloCard %}Novo modelo ficha:{% endblock %}
 
 {% block content %}
+{% load static %}
 
+<br>
 <center>
 
-Nova modelo ficha
+
+    <form method="post">
+        {% csrf_token %}
+        <div class="form-group">
+            <label>Id usuário:</label>
+            <select name="idUsuario">
+                {% for user in listaUsuarios %}
+                    <option>{{ user.nome }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>Data de cadastro:</label>
+            <input type="date" name="dataCad" class="form-control, w-10">
+        </div>
+
+        <div class="form-group">
+            <label>Nome do Modelo:</label>
+            <input type="text" name="equipe" class="form-control, w-25" value="{{ modeloParaEditar.1 }}">
+        </div>
+
+        <div class="form-group">
+            <label>Categorias:</label>
+            <select class="duallistbox" multiple="multiple" name="SelCategoria">
+                {% for cat in listaCategoria %}
+                    <option>{{ cat }}</option>
+                {% endfor %}
+                {% for catSelec in modeloParaEditar.3 %}
+                    <option selected>{{ catSelec }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <center>
+            <button type="submit" name="formFicha" class="btn btn-primary">Cadastrar Modelo de Ficha</button>
+        </center>
+    </form>
+
 
 
 
 </center>
+<br>
+
+
+<script src="{% static 'js/modeloFicha.js' %}"></script>
 
 {% endblock %}

@@ -26,9 +26,23 @@ def novoModeloFicha (request):
 
     # Bancos
     tabelaBanco = "Templates de Fichas"
+    tabelaUsers = "users"
 
     # Parte do decorators de login
     data['SessionUser'] = getSessionUser(request)
     data['context'] = ""
+
+    #########  Busca usuarios
+    usuariosSalvos = db.child(tabelaUsers).get()
+    listaUsuarios = criarListaDoBanco(usuariosSalvos)
+    data['listaUsuarios'] = listaUsuarios
+
+    #########  Busca categoria já categoria
+    categoriaSalvas = db.child("categoria").get()
+    listaCategoria = criarListaDoBanco(categoriaSalvas)
+    apenasNomeCategoria = []
+    for listCat in listaCategoria:
+        apenasNomeCategoria.append(listCat['nome'])
+    data['listaCategoria'] = apenasNomeCategoria
 
     return render(request, "modeloFichas/manipularModeloFicha.html", data)
