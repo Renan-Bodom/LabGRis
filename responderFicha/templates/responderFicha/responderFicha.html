@@ -8,15 +8,12 @@
 
     <br>
 
-    <form method="post">
-        {% csrf_token %}
-        {% for ficha in listaFicha %}
+    {% for ficha in listaFicha %}
+        <a href="./preenchendoFicha/{{ ficha.tituloFicha }}" class="btn btn-secondary">{{ ficha.tituloFicha }}</a>
+    {% endfor %}
 
-            <input type="submit" name="formFichaSelecionada" value="{{ ficha.tituloFicha }}" class="btn btn-secondary">
 
-        {% endfor %}
-    </form>
-
+    <br>
     <br>
 
 </center>

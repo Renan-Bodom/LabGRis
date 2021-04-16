@@ -1,0 +1,17 @@
+{% extends '_layout.html' %}
+{% block title %}Responder Fichas{% endblock %}
+{% block tituloCard %}Ficha: {{ ficha }} <div style="float: right;"> <a href="/fichas/" class="btn btn-light btn-sm">Escolher outra!</a> <div>{% endblock %}
+
+{% block content %}
+{% load static %}
+
+<center>
+
+    Preenchendo a ficha {{ ficha }}
+
+
+</center>
+
+<script src="{% static 'js/responderFicha.js' %}"></script>
+
+{% endblock %}
