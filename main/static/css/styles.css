@@ -1,3 +1,19 @@
 .teste{
     color: red;
 }
+
+.centralizarDentroDiv{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+.ajusteTabela{
+    display: flex;
+    justify-content: center;
+}
+
+.colunaModificar{
+    min-width:112px;
+}

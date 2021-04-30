@@ -4,14 +4,51 @@
 
 {% block content %}
 {% load static %}
+<br>
 
 <center>
 
-    Preenchendo a ficha {{ ficha }}
+    <form method="post">
+        <input type="hidden" name="nomeFicha" value="{{ nomeFicha }}">      <!-- Lembrar nome da ficha -->
+        {% csrf_token %}
+
+        <div class="form-group">
+            <label>Código da Ficha:</label>
+            <input type="text" name="tituloFicha" class="form-control, w-25">
+        </div>
+        {% for cat in categoriaSelec %}
+            <div class="form-group">
+                <label>Categoria: {{ cat.0.0 }}</label><br>
+                {% for perg in cat.1 %}
+                    {{ forloop.counter }} - {{ perg.pergunta }}?<br>
+                    <input name="{{ perg.pergunta }}" value="{{ perg.pergunta }}" type="hidden">
+
+                    <div>
+                    {% if perg.alternativas.0 == 'dissertativa' %}
+                        <input type="text" id="respostaDissertativa" name="resposta{{ perg.pergunta }}" class="form-control, w-50">
+                    {% else %}
+                        {% for alt in perg.alternativas %}
+                            <input type="radio" id="respostaRadio" name="resposta{{ perg.pergunta }}" value="{{ alt }}">
+                            {{ alt }}
+                        {% endfor %}
+                    {% endif %}
+                    </div><br>
+                {% endfor %}
+            </div><br>
+
+        {% endfor %}
+
+
+        <center>
+            <button name="formPerguntas" type="submit" class="btn btn-primary">Cadastrar Ficha!</button>
+        </center>
+
+    </form>
 
 
 </center>
 
+<br>
 <script src="{% static 'js/responderFicha.js' %}"></script>
 
 {% endblock %}
