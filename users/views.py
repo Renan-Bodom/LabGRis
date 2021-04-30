@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
-import sys
+import sys, datetime
 from LabGRis.pyrebase_settings import db, auth
 from LabGRis.decorators import validate_session, getSessionUser
 from LabGRis.decorators import clear_session
@@ -71,12 +71,66 @@ def listaUsers (request):
 @validate_session
 def novoUsuario (request):
     data = {}  # Dicionário DJango
-
-    # Bancos
-    tabelaUsers = "users"
+    data['datenow'] = [datetime.datetime.now().strftime('%d/%m/%Y'), datetime.datetime.now().strftime('%H:%M:%S')]
 
     # Parte do decorators de login
     data['SessionUser'] = getSessionUser(request)
     data['context'] = ""
+
+    # Bancos
+    bancoUsers = "users"
+
+    # Salvar usuário
+    if request.method == "POST":
+        data = request.POST.get('data', '')
+        nome = request.POST.get('nome', '')
+        perfil = request.POST.get('perfil', '')
+        cpf = request.POST.get('cpf', '')
+        email = request.POST.get('email', '')
+        locaisFrequentados = request.POST.get('locaisFrequentados', '')
+
+        sign_user = auth.create_user_with_email_and_password(email, 'labgris123')
+        sign_user = auth.refresh(sign_user['refreshToken'])
+        userId = sign_user['userId']
+
+
+        formCadastro = {'data': data,
+                        'nome': nome,
+                        'perfil': perfil,
+                        'cpf': cpf,
+                        'email': email,
+                        'locaisFrequentados': locaisFrequentados}
+        db.child(bancoUsers).child(userId).set(formCadastro)
+
+        return redirect('/usuario/listar/')
+
+    return render(request, "users/manipularUsuario.html", data)
+
+def alterarUsuario(request):
+    data = {}  # Dicionário DJango
+    data['datenow'] = [datetime.datetime.now().strftime('%d/%m/%Y'), datetime.datetime.now().strftime('%H:%M:%S')]
+
+    # Parte do decorators de login
+    data['SessionUser'] = getSessionUser(request)
+    data['context'] = ""
+
+    # Bancos
+    bancoUsers = "users"
+
+    # Salvar usuário
+    if request.method == "POST":
+        data = request.POST.get('data', '')
+        nome = request.POST.get('nome', '')
+        perfil = request.POST.get('perfil', '')
+        cpf = request.POST.get('cpf', '')
+        email = request.POST.get('email', '')
+        locaisFrequentados = request.POST.get('locaisFrequentados', '')
+
+        formCadastro = {'data': data,
+                        'nome': nome,
+                        'perfil': perfil,
+                        'cpf': cpf,
+                        'locaisFrequentados': locaisFrequentados}
+        db.child(bancoUsers).child(request.session.get('userId')).update(formCadastro)
 
     return render(request, "users/manipularUsuario.html", data)

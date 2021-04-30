@@ -1,15 +1,59 @@
 {% extends '_layout.html' %}
 {% block title %}Usuários{% endblock %}
-{% block tituloCard %}Novo usuário:{% endblock %}
+{% block tituloCard %}Novo usuário: <div style="float: right;"> <a href="/usuario/listar/" class="btn btn-light btn-sm">Voltar para lista</a> <div>{% endblock %}
 
 {% block content %}
 
+<br>
 <center>
 
-Nova usuário
+    <form method="post">
+        {% csrf_token %}
+        <div class="form-group">
+            <label>Data:</label>
+            {{ datenow.0 }}
+            <input type="text" name="data" value="{{ datenow.0 }}" style="display: none;">
+        </div>
+
+        <div class="form-group">
+            <label>Nome:</label>
+            <input type="text" style="max-width: 400px;" name="nome" class="form-control" required>
+        </div>
+
+        <div class="form-group">
+            <label>Perfil:</label>
+            <select name="perfil" style="max-width: 400px;" class="form-control">
+                <option value="P0">Administrador</option>
+                <option value="P1" selected>Nível 1</option>
+                <option value="P2">Nível 2</option>
+                <option value="P3">Nível 3</option>
+                <option value="P4">Nível 4</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>CPF:</label>
+            <input type="text" name="cpf" style="max-width: 400px;" class="form-control" required>
+        </div>
+
+        <div class="form-group">
+            <label>E-Mail:</label>
+            <input type="email" name="email" style="max-width: 400px;" class="form-control" required>
+        </div>
+
+        <div class="form-group">
+            <label>Locais Frequentados:</label>
+            <input type="text" name="locaisFrequentados" style="max-width: 400px;" class="form-control" required><br><br>
+        </div>
 
 
+        <center>
+            <button type="submit" name="salvarUser" class="btn btn-primary">Cadastrar</button>
+        </center>
+
+        </form>
 
 </center>
+<br>
 
 {% endblock %}
