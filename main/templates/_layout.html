@@ -72,21 +72,19 @@
     <a href="/usuario/sair/">Sair</a>
     -->
 
-    <center>
-        <br>
-        <div style="max-width: 90%; background-color: #ffe6e6;" class="border">
-            <header>
-            <div class="w3-container rounded border" style="background-color: #7f0000;">
-                <h2 style="color: white;">{% block tituloCard %}{% endblock %}</h2>
-            </div>
-
-            <div style="max-width: 90%;" class="rounded">
-                {% block content %} {% endblock %}
-            </div>
-
-            </header>
+    <br>
+    <div style="max-width: 90%; background-color: #ffe6e6; margin: 0 auto;" class="border">
+        <header>
+        <div class="w3-container rounded border" style="background-color: #7f0000;">
+            <h2 style="color: white;">{% block tituloCard %}{% endblock %}</h2>
         </div>
-    </center>
+
+        <div style="max-width: 90%; margin: 0 auto;">
+            {% block content %} {% endblock %}
+        </div>
+
+        </header>
+    </div>
 
     <!-- Footer -->
     <footer class="page-footer font-small blue">
