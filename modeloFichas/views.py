@@ -103,3 +103,9 @@ def novoModeloFicha (request):
 
 
     return render(request, "modeloFichas/manipularModeloFicha.html", data)
+
+
+def excluirModeloFicha(request, modFichaExcluir):
+    db.child(tabelaBanco).child(modFichaExcluir).remove()
+
+    return redirect('/modeloFichas/')
