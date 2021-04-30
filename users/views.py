@@ -106,7 +106,7 @@ def novoUsuario (request):
 
     return render(request, "users/manipularUsuario.html", data)
 
-def alterarUsuario(request):
+def alterarUsuario(request, userAlterar):
     data = {}  # Dicionário DJango
     data['datenow'] = [datetime.datetime.now().strftime('%d/%m/%Y'), datetime.datetime.now().strftime('%H:%M:%S')]
 
@@ -134,3 +134,12 @@ def alterarUsuario(request):
         db.child(bancoUsers).child(request.session.get('userId')).update(formCadastro)
 
     return render(request, "users/manipularUsuario.html", data)
+
+def removerUsuario(request, userRemover):
+    data = {}
+    data['userRemover'] = userRemover
+    data['nomeUserRemover'] = request.session.get('nomeUsuario')
+
+    db.child('usersParaRemover').set({"userId": request.session.get('userId')})
+
+    return redirect('/usuario/listar/')
