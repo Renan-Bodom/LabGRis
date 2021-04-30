@@ -1,3 +1,7 @@
 .teste2{
     color: green;
 }
+
+.larguraMinimaCard{
+    min-width:451px;
+}
