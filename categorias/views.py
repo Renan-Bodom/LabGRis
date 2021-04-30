@@ -50,24 +50,13 @@ def novaCategoria(request):
     data['listaPerguntas'] = apenasPerguntas
 
 
-    ###### Capta informações do form
-    tituloCategoria = 'nomeCategoria'
-    formTituloCategoria = request.POST.get(tituloCategoria, 'Categoria não carregada')
-    idCategoriaMae = 'idCategoriaMae'
-    formIdCategoriaMae = request.POST.get(idCategoriaMae, 'ID Categoria Mãe não carregada')
-    SelPerguntas = 'SelPerguntas'
-    formSelPerguntas = request.POST.getlist(SelPerguntas, 'Perguntas não carregada')
-
-
-    print('Titulo cat:', formTituloCategoria, ' ID:', formIdCategoriaMae, ' Perguntas:', formSelPerguntas)
-
-
     ###### Identifica o botão salvar
     if request.method == "POST":
 
         ###### Capta informações do form
         formNomeCategoria = request.POST.get('nomeCategoria', '')
         formSelPerguntas = request.POST.getlist('SelPerguntas', '')
+        formIdCategoriaMae = '123'
 
         listaObjectPerguntas = []
         for per in formSelPerguntas:
