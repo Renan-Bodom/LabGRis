@@ -90,8 +90,24 @@ def novaCategoria(request):
 
 def alterarCategoria(request, categoria):
     print('Alterar categoria:', categoria)
+    data = {}  # Dicionário DJango
 
-    return redirect(redirectCat)
+    # Parte do decorators de login
+    data['SessionUser'] = getSessionUser(request)
+    data['context'] = ""
+
+    #########  Busca perguntas para listar no dualList
+    perguntasSalvas = db.child("perguntas").get()
+    listaPerguntas = criarListaDoBanco(perguntasSalvas)
+
+    apenasPerguntas = []
+    for perguntas in listaPerguntas:
+        apenasPerguntas.append(perguntas['enunciado'])
+
+    data['listaPerguntas'] = apenasPerguntas
+
+
+    return render(request,'categorias/manipularCategoria.html', data)
 
 def excluirCategoria(request, categoria):
     db.child(bancoCategoria).child(categoria).remove()
