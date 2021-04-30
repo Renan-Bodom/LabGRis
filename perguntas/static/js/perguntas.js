@@ -14,7 +14,7 @@ function btnNovaPergunta(){
 function btnAlter(){
     //-------------------- Add input e botão para add mais
     var alter = document.getElementById("AltOuDis");
-    alter.innerHTML = "<button name='btnAlternativas' type='button' onclick='AddInput()' class='btn btn-secondary btn-sm'>Mais alternativas!</button><br><br><input type='text' name='alternativas' required><br>";
+    alter.innerHTML = "<button name='btnAlternativas' type='button' onclick='AddInput()' class='btn btn-secondary btn-sm'>Mais alternativas!</button><br><br>1 - <input type='text' name='alternativas' required><br>";
 
 
     //---------------------- Add botão cadastrar
@@ -67,6 +67,7 @@ function AddInput() {
     var id = "alternativasInput" + h
     input.setAttribute("id", id);
 
+    form.appendChild(document.createTextNode(h + 1 + " - "))
     form.appendChild(input);
     document.getElementById(id).required = true;
     form.appendChild(document.createElement("br"))
