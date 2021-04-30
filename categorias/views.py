@@ -4,6 +4,12 @@ from LabGRis.funcoesCompartilhadas import criarListaDoBanco, criarListaDoBancoKE
 from LabGRis.pyrebase_settings import db
 import datetime
 
+# Bancos
+bancoCategoria = "categoria"
+
+# Redirecionamento de páginas
+redirectCat = '/categorias/'
+
 
 @validate_session
 def categorias(request):
@@ -12,13 +18,6 @@ def categorias(request):
     data['context']     = ""
 
     data['datenow'] = datetime.datetime.now()
-
-    # Bancos
-    bancoCategoria = "categoria"
-
-    # Redirecionamento de páginas
-    redirectCat = 'url_categoria'
-
 
     #########  Busca categoria já cadastradas
     categoriaSalvas = db.child(bancoCategoria).get()
@@ -85,3 +84,15 @@ def novaCategoria(request):
         return redirect('/categorias/')
 
     return render(request,'categorias/manipularCategoria.html', data)
+
+
+def alterarCategoria(request, categoria):
+    print('Alterar categoria:', categoria)
+
+    return redirect(redirectCat)
+
+def excluirCategoria(request, categoria):
+    print('Excluir categoria:', categoria)
+    #db.child(bancoCategoria).child(categoria).remove()
+
+    return redirect(redirectCat)
