@@ -1,56 +1,48 @@
 {% extends '_layout.html' %}
 {% block title %}ModeloFicha{% endblock %}
-{% block tituloCard %}Novo modelo ficha:{% endblock %}
+{% block tituloCard %}Novo modelo ficha: <div style="float: right;"> <a href="/modeloFichas/" class="btn btn-light btn-sm">Voltar para lista</a> <div>{% endblock %}
 
 {% block content %}
 {% load static %}
 
 <br>
-<center>
-
-
+<div class="centralizarDentroDiv">
     <form method="post">
         {% csrf_token %}
-        <div class="form-group">
-            <label>Id usuário:</label>
-            <select name="idUsuario">
-                {% for user in listaUsuarios %}
-                    <option>{{ user.nome }}</option>
-                {% endfor %}
-            </select>
+        <div>
+            <label>Usuário de cadastro:</label><br>
+            {{ SessionUser.nomeUsuario }}
+            <input type="text" name="idUsuario" value="{{ SessionUser.userId }}" style="display: none;">
         </div>
-
-        <div class="form-group">
-            <label>Data de cadastro:</label>
-            <input type="date" name="dataCad" class="form-control, w-10">
+        <br>
+        <div>
+            <label>Data de cadastro:</label><br>
+            {{ datenow.0 }}
+            <input type="text" name="dataAlterado" value="{{ datenow.0 }}" style="display: none;">
         </div>
-
-        <div class="form-group">
-            <label>Nome do Modelo:</label>
-            <input type="text" name="equipe" class="form-control, w-25" value="{{ modeloParaEditar.1 }}">
+        <br>
+        <div>
+            <label>Nome do Modelo:</label><br>
+            <input type="text" name="nomeModelo" required>
         </div>
-
-        <div class="form-group">
+        <br>
+        <div>
             <label>Categorias:</label>
-            <select class="duallistbox" multiple="multiple" name="SelCategoria">
+            <select class="duallistbox" multiple="multiple" name="selCategoria" required>
                 {% for cat in listaCategoria %}
                     <option>{{ cat }}</option>
                 {% endfor %}
-                {% for catSelec in modeloParaEditar.3 %}
-                    <option selected>{{ catSelec }}</option>
-                {% endfor %}
             </select>
         </div>
+
+        <br>
 
         <center>
             <button type="submit" name="formFicha" class="btn btn-primary">Cadastrar Modelo de Ficha</button>
         </center>
     </form>
+</div>
 
-
-
-
-</center>
 <br>
 
 
