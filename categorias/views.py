@@ -3,6 +3,8 @@ from LabGRis.decorators import validate_session, getSessionUser
 from LabGRis.funcoesCompartilhadas import criarListaDoBanco, criarListaDoBancoKEY
 from LabGRis.pyrebase_settings import db
 import datetime
+from perguntas.classes.Perguntas import Pergunta
+from .classes.Categorias import Categoria
 
 # Bancos
 bancoCategoria = "categoria"
@@ -33,9 +35,6 @@ def categorias(request):
 def novaCategoria(request):
     data = {}  # Dicionário DJango
 
-    # Bancos
-    bancoCategoria = "categoria"
-
     # Parte do decorators de login
     data['SessionUser'] = getSessionUser(request)
     data['context'] = ""
@@ -63,9 +62,13 @@ def novaCategoria(request):
     print('Titulo cat:', formTituloCategoria, ' ID:', formIdCategoriaMae, ' Perguntas:', formSelPerguntas)
 
 
-    ###### Identifica o botão salvar e cadastra no banco
-    if request.method == "POST" and "cadastrarCategoria" in request.POST:
-        '''
+    ###### Identifica o botão salvar
+    if request.method == "POST":
+
+        ###### Capta informações do form
+        formNomeCategoria = request.POST.get('nomeCategoria', '')
+        formSelPerguntas = request.POST.getlist('SelPerguntas', '')
+
         listaObjectPerguntas = []
         for per in formSelPerguntas:
             perguntasDoBanco = db.child("perguntas").child(per).get()
@@ -73,15 +76,14 @@ def novaCategoria(request):
             objectPergunta = Pergunta(perguntaEAlternativas[1], perguntaEAlternativas[0])
             listaObjectPerguntas.append(objectPergunta)
 
-        objectCategoria = Categoria(formTituloCategoria, formIdCategoriaMae, listaObjectPerguntas)
+        objectCategoria = Categoria(formNomeCategoria, formIdCategoriaMae, listaObjectPerguntas)
         listaPerguntas = objectCategoria.get_objectPerguntas()
 
-        db.child(bancoCategoria).child(formTituloCategoria).set(objectCategoria.enviarCategoriaFirebase())
+        db.child(bancoCategoria).child(formNomeCategoria).set(objectCategoria.enviarCategoriaFirebase())
         for per in listaPerguntas:
-            db.child(bancoCategoria).child(formTituloCategoria).update(
-                objectCategoria.updatePerguntasCategoriaFirebase(per.get_tituloPergunta(), per.get_tituloAlternativa()))'''
+            db.child(bancoCategoria).child(formNomeCategoria).update(objectCategoria.updatePerguntasCategoriaFirebase(per.get_tituloPergunta(), per.get_tituloAlternativa()))
 
-        return redirect('/categorias/')
+        return redirect(redirectCat)
 
     return render(request,'categorias/manipularCategoria.html', data)
 
@@ -92,7 +94,6 @@ def alterarCategoria(request, categoria):
     return redirect(redirectCat)
 
 def excluirCategoria(request, categoria):
-    print('Excluir categoria:', categoria)
-    #db.child(bancoCategoria).child(categoria).remove()
+    db.child(bancoCategoria).child(categoria).remove()
 
     return redirect(redirectCat)
