@@ -1,10 +1,18 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from LabGRis.decorators import validate_session, getSessionUser
 from LabGRis.funcoesCompartilhadas import criarListaDoBanco, criarListaDoBancoKEY
 from LabGRis.pyrebase_settings import db
 from perguntas.classes.Perguntas import Pergunta
 from categorias.classes.Categorias import Categoria
+from responderFicha.classes.FichaPreenchida import FichaPreenchida
 
+
+# Bancos
+bancoModeloFicha = "Templates de Fichas"
+tabelaBancoFicha = "fichaAppTeste"
+
+# Redirecionamento de páginas
+pgCampo = '/fichas/'
 
 @validate_session
 def responderFicha(request):
@@ -75,5 +83,62 @@ def preenchendoFicha(request, fichaSelec):
         listaPergutas.append(juntaInfPerguntas)
 
     data['categoriaSelec'] = listaPergutas
+
+    ################################################################ Recuperando informações do form ###################
+    if request.method == "POST":
+        listaPerguntasForm = []
+        for perg in listaApenasPerguntas:
+            pergunta = perg
+            perguntaForm = request.POST.get(pergunta, 'Pergunta não carregada')
+            resposta = ('resposta' + perg)
+            respostaForm = request.POST.get(resposta, 'Resposta não carregada')
+            tituloFicha = 'tituloFicha'
+            tituloFichaForm = request.POST.get(tituloFicha, 'Titulo Ficha não carregada')
+            idUsuario = 'idUsuario'
+            idUsuarioForm = request.POST.get(idUsuario, 'Teste')
+            tituloCategoriaF = 'tituloCategoria'
+            tituloCategoriaForm = request.POST.get(tituloCategoriaF, 'Categoria não carregada')
+
+            objectPerguntaPreenchida = Pergunta(perguntaForm, respostaForm)
+            listaPerguntasForm.append(objectPerguntaPreenchida)
+
+        ##################################################################### Salvando no banco
+        contCat = 0
+        objectFichaPreenchida = FichaPreenchida(tituloFichaForm, idUsuario, listaCategoriaSalvaFicha, fichaSelec)
+        # Cria a ficha no banco
+        db.child(tabelaBancoFicha).child(objectFichaPreenchida.get_tituloFicha()).set(objectFichaPreenchida.enviarFichaFirebase())
+        # Percorre cada categoria
+        for categoriaList in listaCategoriaSalvaFicha:
+            idTeste = 0
+            objectCategoriaPreenchida = Categoria(categoriaList.get_tituloCategoria(), idTeste, categoriaList.get_objectPerguntas())
+            # Salva as categorias
+            db.child(tabelaBancoFicha).child(objectFichaPreenchida.get_tituloFicha()).update(objectFichaPreenchida.updateFichaCategoriaFirebase(categoriaList.get_tituloCategoria(), idTeste, contCat))
+            contP = 0
+            for perg in objectCategoriaPreenchida.get_objectPerguntas():  # Salva as perguntas
+                db.child(tabelaBancoFicha).child(objectFichaPreenchida.get_tituloFicha()).child('categorias').child(contCat).update(objectFichaPreenchida.updateFichaPerguntasFirebase(perg.get_tituloPergunta(), perg.get_tituloAlternativa(), contP))
+                contAlt = 0
+                for alter in perg.get_tituloAlternativa():  # Salva as alternativas
+                    if alter == "dissertativa":
+                        for pergForm in listaPerguntasForm:
+                            if perg.get_tituloPergunta() == pergForm.get_tituloPergunta():
+                                respostaDissertativa = pergForm.get_tituloAlternativa()
+                        db.child(tabelaBancoFicha).child(objectFichaPreenchida.get_tituloFicha()).child('categorias').child(contCat).child('perguntas').child(contP).update(objectFichaPreenchida.updateFichaAlternativasDissertativaFirebase(respostaDissertativa, contAlt))
+
+                    else:
+                        marcadoComo = False
+                        for pergForm in listaPerguntasForm:  # Salva a resposta (Para alterar resposta fazer algo parecido com este)
+                            if perg.get_tituloPergunta() == pergForm.get_tituloPergunta():
+                                if alter == pergForm.get_tituloAlternativa():
+                                    marcadoComo = True
+                        db.child(tabelaBancoFicha).child(objectFichaPreenchida.get_tituloFicha()).child('categorias').child(contCat).child('perguntas').child(contP).update(objectFichaPreenchida.updateFichaAlternativasFirebase(alter, contAlt, marcadoComo))
+
+                    contAlt = contAlt + 1
+
+                contP = contP + 1
+
+            contCat = contCat + 1
+
+        # html = "<html><body><center><h1>Pergunta:" + respostaForm + "</h1></center></body></html>"
+        return redirect(pgCampo)
 
     return render(request, 'responderFicha/preencherFicha.html', data)
