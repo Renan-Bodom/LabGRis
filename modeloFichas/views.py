@@ -57,7 +57,7 @@ def novoModeloFicha (request):
         formIdUsuario = request.POST.get('idUsuario', '')
         formDataAlterado = request.POST.get('dataAlterado', '')
         formNomeModelo = request.POST.get('nomeModelo', '')
-        formSelCategoria = request.POST.getlist('selCategoria', '')
+        formSelCategoria = request.POST.getlist('dualListBox', '')
 
         listaObjectCategoria = []
         for cat in formSelCategoria:

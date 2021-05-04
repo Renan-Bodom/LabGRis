@@ -7,3 +7,9 @@ function w3_open() {
 function w3_close() {
   document.getElementById("mySidebar").style.display = "none";
 }
+
+// DualList
+var demo1 = $('select[name="dualListBox"]').bootstrapDualListbox();
+$("#demoform").submit(function() {alert($('[name="dualListBox"]').val());
+    return false;
+});

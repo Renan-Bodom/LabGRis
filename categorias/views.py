@@ -55,7 +55,7 @@ def novaCategoria(request):
 
         ###### Capta informações do form
         formNomeCategoria = request.POST.get('nomeCategoria', '')
-        formSelPerguntas = request.POST.getlist('SelPerguntas', '')
+        formSelPerguntas = request.POST.getlist('dualListBox', '')
         formIdCategoriaMae = '123'
 
         listaObjectPerguntas = []
