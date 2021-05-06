@@ -59,7 +59,7 @@ def novaPergunta(request):
         return redirect(pagPerguntas)
 
     # OPÇÃO alternativas
-    if request.method == "POST" and "formPerguntas" in request.POST:
+    if request.method == "POST" and "formPergunta" in request.POST:
         enunciado = 'enunciado'
         formEnunciado = request.POST.get(enunciado, 'Enunciado não carregado')
         alternativasSel = 'alternativas'
@@ -67,6 +67,18 @@ def novaPergunta(request):
 
         objectPergunta = Pergunta(formEnunciado, formAlternativas)
         db.child(bancoPergunta).child(formEnunciado).set(objectPergunta.enviarPerguntaFirebase(formAlternativas))
+
+        return redirect(pagPerguntas)
+
+    # OPÇÃO alternativas
+    if request.method == "POST" and "formPerguntaMultiplasRespostas" in request.POST:
+        enunciado = 'enunciado'
+        formEnunciado = request.POST.get(enunciado, 'Enunciado não carregado')
+        alternativasSel = 'alternativas'
+        formAlternativas = request.POST.getlist(alternativasSel, 'Alternativas não carregada')
+
+        objectPergunta = Pergunta(formEnunciado, formAlternativas)
+        db.child(bancoPergunta).child(formEnunciado).set(objectPergunta.enviarPerguntaMultiplasRespostasFirebase(formAlternativas))
 
         return redirect(pagPerguntas)
 
