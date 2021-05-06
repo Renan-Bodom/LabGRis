@@ -21,7 +21,7 @@ class Pergunta(Alternativa):
     ## Pronto para salvar no banco nomeDoCampo: DadoParaSalvar
     def enviarPerguntaFirebase(self, alternativa):
         objectAlternativa = Alternativa(alternativa)
-        data = {"enunciado": self._tituloPergunta,
+        data = {"tituloPergunta": self._tituloPergunta,
                 "fechada": True,
                 "multiplasRespostas": False,
                 # "alternativas": self._alternativa}
@@ -31,7 +31,7 @@ class Pergunta(Alternativa):
 
     def enviarPerguntaMultiplasRespostasFirebase(self, alternativa):
         objectAlternativa = Alternativa(alternativa)
-        data = {"enunciado": self._tituloPergunta,
+        data = {"tituloPergunta": self._tituloPergunta,
                 "fechada": True,
                 "multiplasRespostas": True,
                 # "alternativas": self._alternativa}
@@ -41,7 +41,7 @@ class Pergunta(Alternativa):
 
     ## Salva como dissertativa
     def enviarPerguntaDissertativaFirebase(self):
-        data = {"enunciado": self._tituloPergunta,
+        data = {"tituloPergunta": self._tituloPergunta,
                 "fechada": False,
                 "multiplasRespostas": False}
         return data
