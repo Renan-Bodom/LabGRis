@@ -8,6 +8,7 @@ from .classes.Categorias import Categoria
 
 # Bancos
 bancoCategoria = "categoria"
+bancoPerguntas = "perguntas"
 
 # Redirecionamento de páginas
 redirectCat = '/categorias/'
@@ -45,7 +46,7 @@ def novaCategoria(request):
 
     apenasPerguntas = []
     for perguntas in listaPerguntas:
-        apenasPerguntas.append(perguntas['enunciado'])
+        apenasPerguntas.append(perguntas['tituloPergunta'])
 
     data['listaPerguntas'] = apenasPerguntas
 
@@ -60,17 +61,17 @@ def novaCategoria(request):
 
         listaObjectPerguntas = []
         for per in formSelPerguntas:
-            perguntasDoBanco = db.child("perguntas").child(per).get()
+            perguntasDoBanco = db.child(bancoPerguntas).child(per).get()
             perguntaEAlternativas = criarListaDoBanco(perguntasDoBanco)
-            objectPergunta = Pergunta(perguntaEAlternativas[1], perguntaEAlternativas[0])
+            objectPergunta = Pergunta(perguntaEAlternativas[3], perguntaEAlternativas[0])
             listaObjectPerguntas.append(objectPergunta)
 
         objectCategoria = Categoria(formNomeCategoria, formIdCategoriaMae, listaObjectPerguntas)
         listaPerguntas = objectCategoria.get_objectPerguntas()
 
         db.child(bancoCategoria).child(formNomeCategoria).set(objectCategoria.enviarCategoriaFirebase())
-        for per in listaPerguntas:
-            db.child(bancoCategoria).child(formNomeCategoria).update(objectCategoria.updatePerguntasCategoriaFirebase(per.get_tituloPergunta(), per.get_tituloAlternativa()))
+        for objPergunta in listaPerguntas:
+            db.child(bancoCategoria).child(formNomeCategoria).child("tituloPerguntas").child(objPergunta.get_tituloPergunta()).update(objPergunta.enviarPerguntaFirebase(objPergunta.get_tituloAlternativa()))
 
         return redirect(redirectCat)
 
