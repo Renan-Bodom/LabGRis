@@ -30,7 +30,9 @@
 
             <th>{{ per.tituloPergunta }}?</th>
 
-            <td>{{ per.alternativas }}</td>
+            <td>{% for alt in per.alternativas %}
+                    <div class="divLadoLado btn btn-outline-dark">{{ alt }}</div>
+                {% endfor %}</td>
 
             <td class="colunaManipular">
                 <!-- https://primer.style/octicons/pencil-24 -->
