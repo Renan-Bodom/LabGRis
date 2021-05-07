@@ -29,7 +29,9 @@
 
                 <th>{{ categoria.nome }}</th>
                 <td>{{ categoria.idCategoriaMae }}</td>
-                <td>{{ categoria.tituloPerguntas }}</td>
+                <td>{% for perg in categoria.tituloPerguntas %}
+                        <div class="divLadoLado btn btn-outline-dark">{{ perg }}</div>
+                    {% endfor %}</td>
                 <td class="colunaManipular">
                     <!-- https://primer.style/octicons/pencil-24 -->
                     <center>
