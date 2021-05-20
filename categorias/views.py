@@ -8,6 +8,7 @@ from .classes.Categorias import Categoria
 
 # Bancos
 bancoCategoria = "categoria"
+bancoPerguntas = "perguntas"
 
 # Redirecionamento de páginas
 redirectCat = '/categorias/'
@@ -45,7 +46,7 @@ def novaCategoria(request):
 
     apenasPerguntas = []
     for perguntas in listaPerguntas:
-        apenasPerguntas.append(perguntas['enunciado'])
+        apenasPerguntas.append(perguntas['tituloPergunta'])
 
     data['listaPerguntas'] = apenasPerguntas
 
@@ -60,17 +61,34 @@ def novaCategoria(request):
 
         listaObjectPerguntas = []
         for per in formSelPerguntas:
-            perguntasDoBanco = db.child("perguntas").child(per).get()
-            perguntaEAlternativas = criarListaDoBanco(perguntasDoBanco)
-            objectPergunta = Pergunta(perguntaEAlternativas[1], perguntaEAlternativas[0])
+            perguntasDoBanco = db.child(bancoPerguntas).child(per).get().val()
+            if perguntasDoBanco['fechada'] == True:
+                objectPergunta = Pergunta(perguntasDoBanco['tituloPergunta'], perguntasDoBanco['alternativas'])
+            else:
+                objectPergunta = Pergunta(perguntasDoBanco['tituloPergunta'], 'dissertativa')
             listaObjectPerguntas.append(objectPergunta)
 
         objectCategoria = Categoria(formNomeCategoria, formIdCategoriaMae, listaObjectPerguntas)
         listaPerguntas = objectCategoria.get_objectPerguntas()
 
+        # Criando o nó da categoria criada
         db.child(bancoCategoria).child(formNomeCategoria).set(objectCategoria.enviarCategoriaFirebase())
-        for per in listaPerguntas:
-            db.child(bancoCategoria).child(formNomeCategoria).update(objectCategoria.updatePerguntasCategoriaFirebase(per.get_tituloPergunta(), per.get_tituloAlternativa()))
+        # Salvando perguntas dessa categoria
+        for objPergunta in listaPerguntas:
+            infoPergunta = db.child(bancoPerguntas).child(objPergunta.get_tituloPergunta()).get().val()
+            if infoPergunta['fechada'] == True:                 # Checando se a pergunta é fechada
+                if infoPergunta['multiplasRespostas'] == True:  # Chegando se a pergunta tem mais de uma resposta
+                    db.child(bancoCategoria).child(formNomeCategoria).child("tituloPerguntas").child(
+                        objPergunta.get_tituloPergunta()).update(
+                        objPergunta.enviarPerguntaMultiplasRespostasFirebase(objPergunta.get_tituloAlternativa()))
+                else:
+                    db.child(bancoCategoria).child(formNomeCategoria).child("tituloPerguntas").child(
+                        objPergunta.get_tituloPergunta()).update(
+                        objPergunta.enviarPerguntaFirebase(objPergunta.get_tituloAlternativa()))
+            else:
+                db.child(bancoCategoria).child(formNomeCategoria).child("tituloPerguntas").child(
+                    objPergunta.get_tituloPergunta()).update(
+                    objPergunta.enviarPerguntaDissertativaFirebase())
 
         return redirect(redirectCat)
 

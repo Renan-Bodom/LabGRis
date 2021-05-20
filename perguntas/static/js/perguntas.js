@@ -19,7 +19,7 @@ function btnAlter(){
 
     //---------------------- Add botão cadastrar
     var btnCadastrar = document.getElementById("btnCadastrar");
-    btnCadastrar.innerHTML = "<button name='formPerguntas' type='submit' class='btn btn-primary'>Cadastrar</button>";
+    btnCadastrar.innerHTML = "Cadastrar como:<br><button name='formPergunta' type='submit' class='btn btn-primary'>Única resposta</button> <button name='formPerguntaMultiplasRespostas' type='submit' class='btn btn-primary'>Multiplas respostas</button>";
     //btnCadastrar.innerHTML = "AQUI";
 
 

@@ -48,12 +48,14 @@ class Categoria(Pergunta):
                 "idCategoriaMae": self._idCategoria}
         return data
 
+'''
     def updatePerguntasCategoriaFirebase(self, tituloPergunta, alternativas):
         data = {
-            "tituloPergunta/" + tituloPergunta: {
+            "tituloPerguntas/" + tituloPergunta: {
                 "tituloPergunta": tituloPergunta,
                 "alternativas": alternativas
             }
         }
 
         return data
+'''

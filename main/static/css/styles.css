@@ -17,3 +17,8 @@
 .colunaModificar{
     min-width:112px;
 }
+
+.divLadoLado{
+    display: inline-block;
+    vertical-align: bottom;
+}

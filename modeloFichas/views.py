@@ -62,40 +62,43 @@ def novoModeloFicha (request):
         listaObjectCategoria = []
         for cat in formSelCategoria:
             listaObjectPergunta = []
-            categoriaBanco = db.child("categoria").child(cat).child("tituloPergunta").get()
+            categoriaBanco = db.child("categoria").child(cat).child("tituloPerguntas").get()
             dadosCategoria = criarListaDoBanco(categoriaBanco)
 
             for perg in dadosCategoria:
-                objectPergunta = Pergunta(perg["tituloPergunta"], perg["alternativas"])
-                listaObjectPergunta.append(objectPergunta)
-                #print(objectPergunta.get_tituloPergunta(), objectPergunta.get_tituloAlternativa())
+                if perg['fechada'] == True:  # Checando se a pergunta é fechada
+                    objectPergunta = Pergunta(perg["tituloPergunta"], perg["alternativas"])
+                    listaObjectPergunta.append(objectPergunta)
+                else:
+                    objectPergunta = Pergunta(perg["tituloPergunta"], 'dissertativa')
+                    listaObjectPergunta.append(objectPergunta)
+                    #print(objectPergunta.get_tituloPergunta(), objectPergunta.get_tituloAlternativa())
 
             idCateogira = 1  #########################################################Precisa arrumar!!
             objectCategoria = Categoria(cat, idCateogira, listaObjectPergunta)
             listaObjectCategoria.append(objectCategoria)
 
         objectModeloFicha = Ficha(formNomeModelo, formIdUsuario, listaObjectCategoria)
-        listaCategoria = objectModeloFicha.get_objectCategorias()
-        listaPerguntas = listaCategoria[0].get_objectPerguntas()
-        perguntaDaLista = listaPerguntas[0].get_tituloPergunta()
-        alternativasDaLista = listaPerguntas[0].get_tituloAlternativa()
-        #print('AQUI', objectModeloFicha.get_tituloFicha(), listaCategoria[0].get_tituloCategoria(), perguntaDaLista, alternativasDaLista)
 
+        # Criando o nó do modelo de ficha
         db.child(tabelaBanco).child(formNomeModelo).set(objectModeloFicha.enviarFichaFirebase())
 
         contCat = 0
-        for lCat in listaCategoria:
+        for lCat in objectModeloFicha.get_objectCategorias():
             db.child(tabelaBanco).child(formNomeModelo).update(objectModeloFicha.updateFichaCategoriaFirebase(lCat.get_tituloCategoria(), lCat.get_idCategoria(), contCat))
             contPG = 0
             for pg in lCat.get_objectPerguntas():
-                db.child(tabelaBanco).child(formNomeModelo).child("categorias").child(contCat).update(objectModeloFicha.updateFichaPerguntasFirebase(pg.get_tituloPergunta(), pg.get_tituloAlternativa(), contPG))
-                contAlt = 0
-                if pg.get_tituloAlternativa() == "dissertativa":
-                    db.child(tabelaBanco).child(formNomeModelo).child("categorias").child(contCat).child("perguntas").child(contPG).update(objectModeloFicha.updateFichaDissertativaFirebase())
+                infoPergunta = db.child("categoria").child(lCat.get_tituloCategoria()).child("tituloPerguntas").child(
+                    pg.get_tituloPergunta()).get().val()                        # Recupera informações da pergunta
+
+                if infoPergunta['fechada'] == True:
+                    if infoPergunta['multiplasRespostas'] == True:
+                        db.child(tabelaBanco).child(formNomeModelo).child("categorias").child(contCat).child("perguntas").child(contPG).update(pg.enviarModeloPerguntaMultiplasRespostasFirebase(pg.get_tituloAlternativa()))
+                    else:
+                        db.child(tabelaBanco).child(formNomeModelo).child("categorias").child(contCat).child("perguntas").child(contPG).update(pg.enviarModeloPerguntaFirebase(pg.get_tituloAlternativa()))
                 else:
-                    for alt in pg.get_tituloAlternativa():
-                        db.child(tabelaBanco).child(formNomeModelo).child("categorias").child(contCat).child("perguntas").child(contPG).update(objectModeloFicha.updateFichaAlternativasFirebase(alt, contAlt))
-                        contAlt = contAlt + 1
+                    db.child(tabelaBanco).child(formNomeModelo).child("categorias").child(contCat).child("perguntas").child(contPG).update(pg.enviarModeloPerguntaDissertativaFirebase())
+
                 contPG = contPG + 1
             contCat = contCat + 1
 
