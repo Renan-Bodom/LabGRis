@@ -41,38 +41,4 @@ class Ficha:
                 #"idCategoria": idCategoria
             }
         }
-
-        return data
-
-    def updateFichaPerguntasFirebase(self, pergunta, alternativas, cont):
-
-        data = {
-            "perguntas/" + str(cont) + "/": {
-                "tituloPergunta": pergunta
-                #"alternativas": alternativas
-            }
-        }
-
-        return data
-
-    def updateFichaAlternativasFirebase(self, alternativa, cont):
-
-        data = {
-            "alternativas/" + str(cont) + "/": {
-                "tituloAlternativa": alternativa,
-                "resposta": False
-            }
-        }
-
-        return data
-
-    def updateFichaDissertativaFirebase(self):
-
-        data = {
-            "alternativas/0/": {
-                "tituloAlternativa": "dissertativa",
-                "resposta": ""
-            }
-        }
-
         return data

@@ -18,6 +18,8 @@ class Pergunta(Alternativa):
         def set_alternativa(self, perg):
             self._alternativa = perg'''
 
+
+#---------------------- Cadastrado de perguntas ------------------
     ## Pronto para salvar no banco nomeDoCampo: DadoParaSalvar
     def enviarPerguntaFirebase(self, alternativa):
         objectAlternativa = Alternativa(alternativa)
@@ -44,4 +46,42 @@ class Pergunta(Alternativa):
         data = {"tituloPergunta": self._tituloPergunta,
                 "fechada": False,
                 "multiplasRespostas": False}
+        return data
+
+
+#----------------------------- Padrão para responder fichas --------------
+
+    ## Pronto para salvar no banco nomeDoCampo: DadoParaSalvar
+    def enviarModeloPerguntaFirebase(self, alternativa):
+        objectAlternativa = Alternativa(alternativa)
+        data = {"tituloPergunta": self._tituloPergunta,
+                "fechada": True,
+                "multiplasRespostas": False}
+        cont = 0
+        for alt in objectAlternativa.get_tituloAlternativa():
+            data['alternativas/' + str(cont) + '/tituloAlternativa/'] = alt
+            data['alternativas/' + str(cont) + '/resposta/'] = False
+            cont = cont + 1
+        return data
+
+
+    def enviarModeloPerguntaMultiplasRespostasFirebase(self, alternativa):
+        objectAlternativa = Alternativa(alternativa)
+        data = {"tituloPergunta": self._tituloPergunta,
+                "fechada": True,
+                "multiplasRespostas": True}
+        cont = 0
+        for alt in objectAlternativa.get_tituloAlternativa():
+            data['alternativas/' + str(cont) + '/tituloAlternativa/'] = alt
+            data['alternativas/' + str(cont) + '/resposta/'] = False
+            cont = cont + 1
+        return data
+
+
+    ## Salva como dissertativa
+    def enviarModeloPerguntaDissertativaFirebase(self):
+        data = {"tituloPergunta": self._tituloPergunta,
+                "fechada": False,
+                "multiplasRespostas": False,
+                "resposta": ""}
         return data

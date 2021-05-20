@@ -88,14 +88,17 @@ def novoModeloFicha (request):
             db.child(tabelaBanco).child(formNomeModelo).update(objectModeloFicha.updateFichaCategoriaFirebase(lCat.get_tituloCategoria(), lCat.get_idCategoria(), contCat))
             contPG = 0
             for pg in lCat.get_objectPerguntas():
-                db.child(tabelaBanco).child(formNomeModelo).child("categorias").child(contCat).update(objectModeloFicha.updateFichaPerguntasFirebase(pg.get_tituloPergunta(), pg.get_tituloAlternativa(), contPG))
-                contAlt = 0
-                if pg.get_tituloAlternativa() == "dissertativa":
-                    db.child(tabelaBanco).child(formNomeModelo).child("categorias").child(contCat).child("perguntas").child(contPG).update(objectModeloFicha.updateFichaDissertativaFirebase())
+                infoPergunta = db.child("categoria").child(lCat.get_tituloCategoria()).child("tituloPerguntas").child(
+                    pg.get_tituloPergunta()).get().val()                        # Recupera informações da pergunta
+
+                if infoPergunta['fechada'] == True:
+                    if infoPergunta['multiplasRespostas'] == True:
+                        db.child(tabelaBanco).child(formNomeModelo).child("categorias").child(contCat).child("perguntas").child(contPG).update(pg.enviarModeloPerguntaMultiplasRespostasFirebase(pg.get_tituloAlternativa()))
+                    else:
+                        db.child(tabelaBanco).child(formNomeModelo).child("categorias").child(contCat).child("perguntas").child(contPG).update(pg.enviarModeloPerguntaFirebase(pg.get_tituloAlternativa()))
                 else:
-                    for alt in pg.get_tituloAlternativa():
-                        db.child(tabelaBanco).child(formNomeModelo).child("categorias").child(contCat).child("perguntas").child(contPG).update(objectModeloFicha.updateFichaAlternativasFirebase(alt, contAlt))
-                        contAlt = contAlt + 1
+                    db.child(tabelaBanco).child(formNomeModelo).child("categorias").child(contCat).child("perguntas").child(contPG).update(pg.enviarModeloPerguntaDissertativaFirebase())
+
                 contPG = contPG + 1
             contCat = contCat + 1
 
