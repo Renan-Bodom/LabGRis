@@ -97,8 +97,6 @@ def preenchendoFicha(request, fichaSelec):
             respostaForm = request.POST.get(resposta, 'Resposta não carregada')
             tituloFicha = 'tituloFicha'
             tituloFichaForm = request.POST.get(tituloFicha, 'Titulo Ficha não carregada')
-            idUsuario = 'idUsuario'
-            idUsuarioForm = request.POST.get(idUsuario, 'Teste')
             tituloCategoriaF = 'tituloCategoria'
             tituloCategoriaForm = request.POST.get(tituloCategoriaF, 'Categoria não carregada')
 
@@ -107,7 +105,7 @@ def preenchendoFicha(request, fichaSelec):
 
         ##################################################################### Salvando no banco
         contCat = 0
-        objectFichaPreenchida = FichaPreenchida(tituloFichaForm, idUsuario, listaCategoriaSalvaFicha, fichaSelec)
+        objectFichaPreenchida = FichaPreenchida(tituloFichaForm, request.session.get('userId'), listaCategoriaSalvaFicha, fichaSelec)
         # Cria a ficha no banco
         db.child(tabelaBancoFicha).child(objectFichaPreenchida.get_tituloFicha()).set(objectFichaPreenchida.enviarFichaFirebase())
         # Percorre cada categoria

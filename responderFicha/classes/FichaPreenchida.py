@@ -41,7 +41,7 @@ class FichaPreenchida:
         data = {#"equipe": self._tituloFicha,
                 "keyFicha": self._tituloFicha,
                 "tituloFicha": self._tituloFicha,
-                "idUsuario": "Renan",
+                "idUsuario": self._idUsuario,
                 "modeloFicha": self._modeloFicha,
                 "data": datetime.datetime.now().strftime("%d/%m/%Y")
         }
