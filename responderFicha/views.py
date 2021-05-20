@@ -61,9 +61,12 @@ def preenchendoFicha(request, fichaSelec):
         listaDePerguntas = []
         for perguntas in perguntaDaLista:
             listaAlternativas = []
-            for alter in perguntas["alternativas"]:
-                alternativaFicha = alter["tituloAlternativa"]
-                listaAlternativas.append(alternativaFicha)
+            try:
+                for alter in perguntas["alternativas"]:
+                    alternativaFicha = alter["tituloAlternativa"]
+                    listaAlternativas.append(alternativaFicha)
+            except:
+                listaAlternativas.append("dissertativa")
             objectPerguntas = Pergunta(perguntas["tituloPergunta"], listaAlternativas)
             listaDePerguntas.append(objectPerguntas)
         objectCategoria = Categoria(tituloCategoria, 1, listaDePerguntas)
