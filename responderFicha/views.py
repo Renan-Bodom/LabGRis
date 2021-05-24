@@ -21,6 +21,25 @@ def responderFicha(request):
     data['context'] = ""
 
     # Bancos
+    bancoFicha = "fichaAppTeste"
+
+    #########  Busca Modelos de Ficha já cadastradas
+    fichaSalvas = db.child(bancoFicha).get()
+    listaFicha = criarListaDoBanco(fichaSalvas)
+    data['listaFicha'] = listaFicha
+
+    print(listaFicha)
+
+    return render(request, 'responderFicha/responderFicha.html', data)
+
+
+@validate_session
+def modelosFicha(request):
+    data = {}
+    data['SessionUser'] = getSessionUser(request)
+    data['context'] = ""
+
+    # Bancos
     bancoModeloFicha = "Templates de Fichas"
 
     #########  Busca Modelos de Ficha já cadastradas
@@ -28,7 +47,7 @@ def responderFicha(request):
     listaFicha = criarListaDoBanco(fichaSalvas)
     data['listaFicha'] = listaFicha
 
-    return render(request, 'responderFicha/responderFicha.html', data)
+    return render(request, 'responderFicha/modelosFicha.html', data)
 
 
 def preenchendoFicha(request, fichaSelec):
