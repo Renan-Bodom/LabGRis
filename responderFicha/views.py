@@ -170,6 +170,14 @@ def excluirFicha(request, fichaSelec):
     return redirect('url_responderFicha')
 
 def alterarFicha(request, fichaSelec):
-    print('Clicou em alterarFicha, para alterar a ficha:', fichaSelec)
+    data = {}
+    data['SessionUser'] = getSessionUser(request)
 
-    return redirect('url_responderFicha')
+    dadosFicha = db.child(tabelaBancoFicha).child(fichaSelec).get().val()
+    data['fichaSelec'] = dadosFicha
+
+    if request.method == "POST":
+        return redirect('url_responderFicha')
+
+
+    return render(request, 'responderFicha/alterarFicha.html', data)
