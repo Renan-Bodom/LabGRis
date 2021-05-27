@@ -168,3 +168,8 @@ def excluirFicha(request, fichaSelec):
     db.child(tabelaBancoFicha).child(fichaSelec).remove()
 
     return redirect('url_responderFicha')
+
+def alterarFicha(request, fichaSelec):
+    print('Clicou em alterarFicha, para alterar a ficha:', fichaSelec)
+
+    return redirect('url_responderFicha')
