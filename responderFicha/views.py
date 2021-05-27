@@ -28,7 +28,7 @@ def responderFicha(request):
     listaFicha = criarListaDoBanco(fichaSalvas)
     data['listaFicha'] = listaFicha
 
-    print(listaFicha)
+    #print(listaFicha)
 
     return render(request, 'responderFicha/responderFicha.html', data)
 
@@ -162,3 +162,9 @@ def preenchendoFicha(request, fichaSelec):
         return redirect(pgCampo)
 
     return render(request, 'responderFicha/preencherFicha.html', data)
+
+
+def excluirFicha(request, fichaSelec):
+    db.child(tabelaBancoFicha).child(fichaSelec).remove()
+
+    return redirect('url_responderFicha')
