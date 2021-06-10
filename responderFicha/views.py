@@ -21,6 +21,25 @@ def responderFicha(request):
     data['context'] = ""
 
     # Bancos
+    bancoFicha = "fichaAppTeste"
+
+    #########  Busca Modelos de Ficha já cadastradas
+    fichaSalvas = db.child(bancoFicha).get()
+    listaFicha = criarListaDoBanco(fichaSalvas)
+    data['listaFicha'] = listaFicha
+
+    #print(listaFicha)
+
+    return render(request, 'responderFicha/responderFicha.html', data)
+
+
+@validate_session
+def modelosFicha(request):
+    data = {}
+    data['SessionUser'] = getSessionUser(request)
+    data['context'] = ""
+
+    # Bancos
     bancoModeloFicha = "Templates de Fichas"
 
     #########  Busca Modelos de Ficha já cadastradas
@@ -28,7 +47,7 @@ def responderFicha(request):
     listaFicha = criarListaDoBanco(fichaSalvas)
     data['listaFicha'] = listaFicha
 
-    return render(request, 'responderFicha/responderFicha.html', data)
+    return render(request, 'responderFicha/modelosFicha.html', data)
 
 
 def preenchendoFicha(request, fichaSelec):
@@ -143,3 +162,22 @@ def preenchendoFicha(request, fichaSelec):
         return redirect(pgCampo)
 
     return render(request, 'responderFicha/preencherFicha.html', data)
+
+
+def excluirFicha(request, fichaSelec):
+    db.child(tabelaBancoFicha).child(fichaSelec).remove()
+
+    return redirect('url_responderFicha')
+
+def alterarFicha(request, fichaSelec):
+    data = {}
+    data['SessionUser'] = getSessionUser(request)
+
+    dadosFicha = db.child(tabelaBancoFicha).child(fichaSelec).get().val()
+    data['fichaSelec'] = dadosFicha
+
+    if request.method == "POST":
+        return redirect('url_responderFicha')
+
+
+    return render(request, 'responderFicha/alterarFicha.html', data)

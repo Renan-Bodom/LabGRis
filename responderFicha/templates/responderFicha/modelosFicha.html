@@ -1,0 +1,21 @@
+{% extends '_layout.html' %}
+{% block title %}Responder Fichas{% endblock %}
+{% block tituloCard %}Modelos de ficha:{% endblock %}
+
+{% block content %}
+
+<center>
+
+    <br>
+
+    {% for ficha in listaFicha %}
+        <a href="/fichas/preenchendoFicha/{{ ficha.tituloFicha }}" class="btn btn-secondary">{{ ficha.tituloFicha }}</a>
+    {% endfor %}
+
+
+    <br>
+    <br>
+
+</center>
+
+{% endblock %}

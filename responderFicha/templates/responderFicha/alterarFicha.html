@@ -1,0 +1,58 @@
+{% extends '_layout.html' %}
+{% block title %}Responder Fichas{% endblock %}
+{% block tituloCard %}Ficha: {{ ficha }} <div style="float: right;"> <a href="/fichas/" class="btn btn-light btn-sm">Escolher outra!</a> <div>{% endblock %}
+
+{% block content %}
+{% load static %}
+<br>
+
+<center>
+
+    <form method="post">
+        {% csrf_token %}
+        <input type="hidden" name="nomeFicha" value="{{ nomeFicha }}">      <!-- Lembrar nome da ficha -->
+
+        <div class="form-group">
+            <label>Código da Ficha:</label>
+            <input type="text" name="tituloFicha" class="form-control, w-25"  value="{{ fichaSelec.tituloFicha }}" required>
+        </div>
+        {% for cat in fichaSelec.categorias %}
+            <div class="form-group">
+                <label>Categoria: {{ cat.tituloCategoria }}</label><br>
+                {% for perg in cat.perguntas %}
+                    {{ forloop.counter }} - {{ perg.tituloPergunta }}?<br>
+                    <input name="{{ perg.tituloPergunta }}" value="{{ perg.tituloPergunta }}" type="hidden">
+
+                    <div>
+                    {% if perg.fechada == False %}
+                        <input type="text" id="respostaDissertativa" name="resposta{{ perg.tituloPergunta }}" class="form-control, w-50" value="{{ perg.resposta }}">
+                    {% else %}
+                        {% for alt in perg.alternativas %}
+                            {% if alt.resposta == True %}
+                              <input type="radio" id="respostaRadio" name="resposta{{ perg.tituloPergunta }}" value="{{ alt.tituloAlternativa }}" checked>
+                            {% else %}
+                              <input type="radio" id="respostaRadio" name="resposta{{ perg.tituloPergunta }}" value="{{ alt.tituloAlternativa }}">
+                            {% endif %}
+                            {{ alt.tituloAlternativa }}
+                        {% endfor %}
+                    {% endif %}
+                    </div><br>
+                {% endfor %}
+            </div><br>
+
+        {% endfor %}
+
+
+        <center>
+            <button name="formPerguntas" type="submit" class="btn btn-primary">Cadastrar Ficha!</button>
+        </center>
+
+    </form>
+
+
+</center>
+
+<br>
+<script src="{% static 'js/responderFicha.js' %}"></script>
+
+{% endblock %}
