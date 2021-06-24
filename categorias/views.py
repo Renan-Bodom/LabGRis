@@ -109,7 +109,7 @@ def alterarCategoria(request, categoria):
 
     apenasPerguntas = []
     for perguntas in listaPerguntas:
-        apenasPerguntas.append(perguntas['enunciado'])
+        apenasPerguntas.append(perguntas['tituloPergunta'])
 
     data['listaPerguntas'] = apenasPerguntas
 
