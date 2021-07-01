@@ -116,7 +116,7 @@ def alterarUsuario(request, userAlterar):
     data['context'] = ""
 
     # Dados do usuario
-    dadosUsuario = db.child(bancoUsers).child(userAlterar).get()
+    data['dadosUsuario'] = db.child(bancoUsers).child(userAlterar).get().val()
 
     # Salvar usuário
     if request.method == "POST":
@@ -124,7 +124,6 @@ def alterarUsuario(request, userAlterar):
         nome = request.POST.get('nome', '')
         perfil = request.POST.get('perfil', '')
         cpf = request.POST.get('cpf', '')
-        email = request.POST.get('email', '')
         locaisFrequentados = request.POST.get('locaisFrequentados', '')
 
         formCadastro = {'data': data,
@@ -132,12 +131,15 @@ def alterarUsuario(request, userAlterar):
                         'perfil': perfil,
                         'cpf': cpf,
                         'locaisFrequentados': locaisFrequentados}
-        db.child(bancoUsers).child(request.session.get('userId')).update(formCadastro)
+        db.child(bancoUsers).child(userAlterar).update(formCadastro)
+        return redirect('/usuario/listar/')
 
     return render(request, "users/alterarUsuario.html", data)
 
 def removerUsuario(request, userRemover):
     data = {}
-    db.child(bancoUsers).child(userRemover).remove()
+    #db.child(bancoUsers).child(userRemover).remove()
+
+    db.child('usersParaRemover').update({"userId " + userRemover: userRemover})
 
     return redirect('/usuario/listar/')

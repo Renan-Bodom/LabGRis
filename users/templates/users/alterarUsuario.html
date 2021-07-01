@@ -1,0 +1,60 @@
+{% extends '_layout.html' %}
+{% block title %}Usuários{% endblock %}
+{% block tituloCard %}Alterando dados do {{ dadosUsuario.nome }}: <div style="float: right;"> <a href="/usuario/listar/" class="btn btn-light btn-sm">Voltar para lista</a> <div>{% endblock %}
+
+{% block content %}
+
+<br>
+
+<div class="centralizarDentroDiv">
+    <form method="post">
+        {% csrf_token %}
+        <div class="form-group">
+            <label>Data:</label>
+            {{ datenow.0 }}
+            <input type="text" name="data" value="{{ datenow.0 }}" style="display: none;">
+        </div>
+
+        <div class="form-group">
+            <label>Nome:</label>
+            <input type="text" value="{{ dadosUsuario.nome }}" style="max-width: 400px;" name="nome" class="form-control" required>
+        </div>
+
+        <div class="form-group">
+            <label>Perfil:</label>
+            <select name="perfil" style="max-width: 400px;" class="form-control">
+                <option value="{{ dadosUsuario.perfil }}">{{ dadosUsuario.perfil }}</option>
+                <option value="P0">Administrador</option>
+                <option value="P1" >Nível 1</option>
+                <option value="P2">Nível 2</option>
+                <option value="P3">Nível 3</option>
+                <option value="P4">Nível 4</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>CPF:</label>
+            <input type="text" value="{{ dadosUsuario.cpf }}" name="cpf" style="max-width: 400px;" class="form-control" required>
+        </div>
+
+        <div class="form-group">
+            <label>E-Mail:</label><br>
+            {{ dadosUsuario.email }}
+        </div>
+
+        <div class="form-group">
+            <label>Locais Frequentados:</label>
+            <input type="text" value="{{ dadosUsuario.locaisFrequentados }}" name="locaisFrequentados" style="max-width: 400px;" class="form-control" required><br><br>
+        </div>
+
+
+        <center>
+            <button type="submit" name="salvarUser" class="btn btn-primary">Cadastrar</button>
+        </center>
+
+        </form>
+
+</div>
+<br>
+
+{% endblock %}
