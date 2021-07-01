@@ -5,6 +5,9 @@ from LabGRis.pyrebase_settings import db, auth
 from LabGRis.decorators import validate_session, getSessionUser
 from LabGRis.decorators import clear_session
 
+# Bancos
+bancoUsers = "users"
+
 #@validate_session
 def users(request):
     return render(request,'users/users.html')
@@ -51,18 +54,18 @@ def sair (request):
 def listaUsers (request):
     data = {}   # Dicionário DJango
 
-    # Bancos
-    tabelaUsers = "users"
 
     # Parte do decorators de login
     data['SessionUser'] = getSessionUser(request)
     data['context'] = ""
 
     #  Carrega usuário já cadastrado
-    usuariosSalvos = db.child(tabelaUsers).get()
+    usuariosSalvos = db.child(bancoUsers).get()
     listaUsuarios = []
-    for alt in usuariosSalvos.each():
-        listaUsuarios.append(alt.val())
+    for dadosUser in usuariosSalvos.each():
+        dadosUser2 = dadosUser.val()
+        dadosUser2['key'] = dadosUser.key()
+        listaUsuarios.append(dadosUser2)
 
     data['listaUsuarios'] = listaUsuarios
 
@@ -77,8 +80,6 @@ def novoUsuario (request):
     data['SessionUser'] = getSessionUser(request)
     data['context'] = ""
 
-    # Bancos
-    bancoUsers = "users"
 
     # Salvar usuário
     if request.method == "POST":
@@ -114,8 +115,8 @@ def alterarUsuario(request, userAlterar):
     data['SessionUser'] = getSessionUser(request)
     data['context'] = ""
 
-    # Bancos
-    bancoUsers = "users"
+    # Dados do usuario
+    dadosUsuario = db.child(bancoUsers).child(userAlterar).get()
 
     # Salvar usuário
     if request.method == "POST":
@@ -133,13 +134,10 @@ def alterarUsuario(request, userAlterar):
                         'locaisFrequentados': locaisFrequentados}
         db.child(bancoUsers).child(request.session.get('userId')).update(formCadastro)
 
-    return render(request, "users/manipularUsuario.html", data)
+    return render(request, "users/alterarUsuario.html", data)
 
 def removerUsuario(request, userRemover):
     data = {}
-    data['userRemover'] = userRemover
-    data['nomeUserRemover'] = request.session.get('nomeUsuario')
-
-    db.child('usersParaRemover').set({"userId": request.session.get('userId')})
+    db.child(bancoUsers).child(userRemover).remove()
 
     return redirect('/usuario/listar/')
