@@ -108,6 +108,18 @@ def novoModeloFicha (request):
     return render(request, "modeloFichas/manipularModeloFicha.html", data)
 
 
+def alterarModeloFicha(request, modFichaAlterar):
+    data = {}  # Dicionário DJango
+    data['datenow'] = [datetime.datetime.now().strftime('%d/%m/%Y'), datetime.datetime.now().strftime('%H:%M:%S')]
+
+    # Parte do decorators de login
+    data['SessionUser'] = getSessionUser(request)
+    data['context'] = ""
+
+    data['teste'] = "Teste"
+
+    return render(request, 'modeloFichas/alterarModeloFicha.html', data)
+
 def excluirModeloFicha(request, modFichaExcluir):
     db.child(tabelaBanco).child(modFichaExcluir).remove()
 
