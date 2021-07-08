@@ -44,7 +44,7 @@ def novoModeloFicha (request):
     listaUsuarios = criarListaDoBanco(usuariosSalvos)
     data['listaUsuarios'] = listaUsuarios
 
-    #########  Busca categoria já categoria
+    #########  Busca categorias
     categoriaSalvas = db.child("categoria").get()
     listaCategoria = criarListaDoBanco(categoriaSalvas)
     apenasNomeCategoria = []
@@ -116,9 +116,27 @@ def alterarModeloFicha(request, modFichaAlterar):
     data['SessionUser'] = getSessionUser(request)
     data['context'] = ""
 
-    data['teste'] = "Teste"
+    # Informações do modelo
+    infoModeloFicha = db.child(tabelaBanco).child(modFichaAlterar).get().val()
+
+    #########  Busca categoria já categoria
+    categoriaSalvas = db.child("categoria").get()
+    listaCategoria = criarListaDoBanco(categoriaSalvas)
+    apenasNomeCategoria = []
+    for listCat in listaCategoria:
+        apenasNomeCategoria.append(listCat['nome'])
+    for modeloF in infoModeloFicha['categorias']:
+        try:
+            apenasNomeCategoria.remove(modeloF['tituloCategoria'])
+        except:
+            print("Categoria não existe mais")
+
+    data['listaCategoria'] = apenasNomeCategoria
+    data['infoModeloFicha'] = infoModeloFicha
+
 
     return render(request, 'modeloFichas/alterarModeloFicha.html', data)
+
 
 def excluirModeloFicha(request, modFichaExcluir):
     db.child(tabelaBanco).child(modFichaExcluir).remove()

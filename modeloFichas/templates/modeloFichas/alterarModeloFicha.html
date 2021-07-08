@@ -1,6 +1,6 @@
 {% extends '_layout.html' %}
 {% block title %}ModeloFicha{% endblock %}
-{% block tituloCard %}Alterando modelo ficha "{{ teste }}" <div style="float: right;"> <a href="/modeloFichas/" class="btn btn-light btn-sm">Voltar para lista</a> <div>{% endblock %}
+{% block tituloCard %}Alterando modelo ficha "{{ infoModeloFicha.tituloFicha }}" <div style="float: right;"> <a href="/modeloFichas/" class="btn btn-light btn-sm">Voltar para lista</a> <div>{% endblock %}
 
 {% block content %}
 {% load static %}
@@ -23,7 +23,7 @@
         <br>
         <div>
             <label>Nome do Modelo:</label><br>
-            <input type="text" name="nomeModelo" required>
+            {{ infoModeloFicha.tituloFicha }}
         </div>
         <br>
         <div>
@@ -31,6 +31,9 @@
             <select name="dualListBox" multiple="multiple" size="10" title="duallistbox_demo1[]" required>
                 {% for cat in listaCategoria %}
                     <option>{{ cat }}</option>
+                {% endfor %}
+                {% for cat in infoModeloFicha.categorias %}
+                    <option selected>{{ cat.tituloCategoria }}</option>
                 {% endfor %}
             </select>
         </div>
