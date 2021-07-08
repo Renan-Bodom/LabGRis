@@ -1,0 +1,40 @@
+{% extends '_layout.html' %}
+{% block title %}Categorias{% endblock %}
+{% block tituloCard %}Alterando a categoria "{{ dadosCategoria.nome }}" <div style="float: right;"> <a href="/categorias/" class="btn btn-light btn-sm">Voltar para lista</a> <div>{% endblock %}
+
+{% block content %}
+{% load static %}
+
+<br>
+<div class="centralizarDentroDiv">
+    <form method="post">
+        {% csrf_token %}
+        <div>
+            <label>Nome categoria:</label><br>
+            {{ dadosCategoria.nome }}
+        </div>
+
+        <br>
+
+        <div>
+            <label>Perguntas:</label>
+            <select name="dualListBox" multiple="multiple" size="10" title="duallistbox_demo1[]" required>
+                {% for per in listaPerguntas %}
+                    <option>{{ per }}</option>
+                {% endfor %}
+                {% for per in dadosCategoria.tituloPerguntas %}
+                    <option selected>{{ per }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <center>
+            <button type="submit" name="cadastrarCategoria" class="btn btn-primary">Cadastrar</button>
+        </center>
+    </form>
+</div>
+
+<br>
+
+<script src="{% static 'js/categorias.js' %}"></script>
+{% endblock %}

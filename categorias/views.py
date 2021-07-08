@@ -96,25 +96,30 @@ def novaCategoria(request):
 
 
 def alterarCategoria(request, categoria):
-    print('Alterar categoria:', categoria)
     data = {}  # Dicionário DJango
 
     # Parte do decorators de login
     data['SessionUser'] = getSessionUser(request)
     data['context'] = ""
 
+    # Informações da categoria
+    dadosCategoria = db.child(bancoCategoria).child(categoria).get().val()
+
     #########  Busca perguntas para listar no dualList
     perguntasSalvas = db.child("perguntas").get()
-    listaPerguntas = criarListaDoBanco(perguntasSalvas)
-
     apenasPerguntas = []
-    for perguntas in listaPerguntas:
-        apenasPerguntas.append(perguntas['tituloPergunta'])
-
+    # Monta lista de perguntas
+    for perguntas in perguntasSalvas:
+        apenasPerguntas.append(perguntas.val()['tituloPergunta'])
+    # Remove as já selecionadas
+    for pergCategoria in dadosCategoria['tituloPerguntas']:
+        apenasPerguntas.remove(pergCategoria)
     data['listaPerguntas'] = apenasPerguntas
 
+    # Informações da categoria para alterar
+    data['dadosCategoria'] = dadosCategoria
 
-    return render(request,'categorias/manipularCategoria.html', data)
+    return render(request,'categorias/alterarCategoria.html', data)
 
 def excluirCategoria(request, categoria):
     db.child(bancoCategoria).child(categoria).remove()
