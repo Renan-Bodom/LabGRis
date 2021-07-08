@@ -17,8 +17,6 @@
 
         <br>
 
-
-
         <div class="form-group">
             <!-- Escolhe Alternativas ou Dissertativa -->
             <div class="escolhaAltOuDis">
@@ -27,22 +25,38 @@
             </div>
             <br>
             <div id="AltOuDis">
-                <!--
-                <button name="btnAlternativas" type="button" onclick="AddInput()" class="btn btn-secondary btn-sm" style="display: {{ eAlteracao }};">Mais alternativas!</button>
-                <br style="display: {{ eAlteracao }};"><br style="display: {{ eAlteracao }};">
-                {% for alter in listaAlternativasDaPergunta %}
-                <input type="text" name="alternativas" value="{{ alter }}"><br>
-                {% endfor %}
-                -->
+                {% if perguntaSelecionada.fechada == True %}
+                    <button name='btnAlternativas' type='button' onclick='AddInput()' class='btn btn-secondary btn-sm'>
+                        Mais alternativas!
+                    </button>
+                    <br><br>
+                    {% for alter in perguntaSelecionada.alternativas %}
+                        <input type='text' name='alternativas' value="{{ alter }}" required><br>
+                    {% endfor %}
+                {% endif %}
+
+                {% if perguntaSelecionada.fechada == False %}
+                    Pergunta definida como dissertativa
+                {% endif %}
             </div>
-            <!--
-            <br style="display: {{ eAlteracao }};">
-            <button name="formPerguntas" id="botaoCadastrarAlteracao" type="submit" class="btn btn-primary" style="display: {{ eAlteracao }};">Cadastrar</button>
-            -->
         </div>
 
         <center id="btnCadastrar">
-        <!--<button name="formPerguntas" id="btnCadastrar" type="submit" class="btn btn-primary">Cadastrar</button>-->
+            {% if perguntaSelecionada.fechada == True %}
+                Alterar para:<br>
+                <button name='formPergunta' type='submit' class='btn btn-primary'>
+                    Única resposta
+                </button>
+                <button name='formPerguntaMultiplasRespostas' type='submit' class='btn btn-primary'>
+                    Multiplas respostas
+                </button>
+            {% endif %}
+
+            {% if perguntaSelecionada.fechada == False %}
+                <button name='formPerguntasDissertativa' type='submit' class='btn btn-primary'>
+                    Cadastrar
+                </button>
+            {% endif %}
         </center>
 
     </form>
