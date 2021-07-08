@@ -1,0 +1,56 @@
+{% extends '_layout.html' %}
+{% block title %}Perguntas{% endblock %}
+{% block tituloCard %}Alterando a pergunta "{{ perguntaSelecionada.tituloPergunta }}" <div style="float: right;"> <a href="/perguntas/" class="btn btn-light btn-sm">Voltar para lista</a> <div>{% endblock %}
+
+{% block content %}
+{% load static %}
+
+<br>
+<div class="centralizarDentroDiv">
+    <form method="post">
+        {% csrf_token %}
+
+        <div class="form-group">
+            <label>Enunciado:</label><br>
+            {{ perguntaSelecionada.tituloPergunta }}
+        </div>
+
+        <br>
+
+
+
+        <div class="form-group">
+            <!-- Escolhe Alternativas ou Dissertativa -->
+            <div class="escolhaAltOuDis">
+                <button name="btnAlternativas" type="button" onclick="btnAlter()" class="btn btn-dark">Alternativas</button>
+                <button name="btnDissertativa" type="button" onclick="btnDiss()" class="btn btn-dark">Dissertativa</button>
+            </div>
+            <br>
+            <div id="AltOuDis">
+                <!--
+                <button name="btnAlternativas" type="button" onclick="AddInput()" class="btn btn-secondary btn-sm" style="display: {{ eAlteracao }};">Mais alternativas!</button>
+                <br style="display: {{ eAlteracao }};"><br style="display: {{ eAlteracao }};">
+                {% for alter in listaAlternativasDaPergunta %}
+                <input type="text" name="alternativas" value="{{ alter }}"><br>
+                {% endfor %}
+                -->
+            </div>
+            <!--
+            <br style="display: {{ eAlteracao }};">
+            <button name="formPerguntas" id="botaoCadastrarAlteracao" type="submit" class="btn btn-primary" style="display: {{ eAlteracao }};">Cadastrar</button>
+            -->
+        </div>
+
+        <center id="btnCadastrar">
+        <!--<button name="formPerguntas" id="btnCadastrar" type="submit" class="btn btn-primary">Cadastrar</button>-->
+        </center>
+
+    </form>
+</div>
+<br>
+
+
+
+<script src="{% static 'js/perguntas.js' %}"></script>
+
+{% endblock %}

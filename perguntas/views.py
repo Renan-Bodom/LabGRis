@@ -92,7 +92,6 @@ def excluirPergunta(request, pergunta):
 
 
 def alterarPergunta(request, pergunta):
-    print("Alterando a pergunta", pergunta)
     data = {}  # Dicionário DJango
 
     # Parte do decorators de login
@@ -101,10 +100,13 @@ def alterarPergunta(request, pergunta):
 
     #################################### Alterar pergunta
     # Carrega pergunta
-    perguntaSelecionada = db.child(bancoPergunta).child(pergunta).get()
-    listaAlternativasDaPergunta = criarListaDoBanco(perguntaSelecionada)
+    data['perguntaSelecionada'] = db.child(bancoPergunta).child(pergunta).get().val()
 
-    data['perguntaParaAlterar'] = pergunta
-    data['listaAlternativasDaPergunta'] = listaAlternativasDaPergunta[0]
+    # Recebendo alterações
+    if request.method == "POST":
 
-    return render(request,'perguntas/manipularPerguntas.html', data)
+        print("Recebel as alterações")
+
+        return redirect(pagPerguntas)
+
+    return render(request,'perguntas/alterarPerguntas.html', data)
