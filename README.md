@@ -1,5 +1,5 @@
 # LabGRis
-Este sistema faz parte de uma transformação digital.
+Este sistema tem o objetivo de gerenciar fichas.
 
 ## Bibliotecas utilizadas:
 - django
