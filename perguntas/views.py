@@ -92,7 +92,6 @@ def excluirPergunta(request, pergunta):
 
 
 def alterarPergunta(request, pergunta):
-    print("Alterando a pergunta", pergunta)
     data = {}  # Dicionário DJango
 
     # Parte do decorators de login
@@ -101,10 +100,35 @@ def alterarPergunta(request, pergunta):
 
     #################################### Alterar pergunta
     # Carrega pergunta
-    perguntaSelecionada = db.child(bancoPergunta).child(pergunta).get()
-    listaAlternativasDaPergunta = criarListaDoBanco(perguntaSelecionada)
+    data['perguntaSelecionada'] = db.child(bancoPergunta).child(pergunta).get().val()
 
-    data['perguntaParaAlterar'] = pergunta
-    data['listaAlternativasDaPergunta'] = listaAlternativasDaPergunta[0]
+    # Recebendo alterações
+    # OPÇÃO dissertativa
+    if request.method == "POST" and "formPerguntasDissertativa" in request.POST:
+        objectPergunta = Pergunta(pergunta, alternativa="dissertativa")
+        db.child(bancoPergunta).child(pergunta).set(objectPergunta.enviarPerguntaDissertativaFirebase())
 
-    return render(request,'perguntas/manipularPerguntas.html', data)
+        return redirect(pagPerguntas)
+
+    # OPÇÃO alternativas
+    if request.method == "POST" and "formPergunta" in request.POST:
+        alternativasSel = 'alternativas'
+        formAlternativas = request.POST.getlist(alternativasSel, 'Alternativas não carregada')
+
+        objectPergunta = Pergunta(pergunta, formAlternativas)
+        db.child(bancoPergunta).child(pergunta).set(objectPergunta.enviarPerguntaFirebase(formAlternativas))
+
+        return redirect(pagPerguntas)
+
+    # OPÇÃO alternativas
+    if request.method == "POST" and "formPerguntaMultiplasRespostas" in request.POST:
+        alternativasSel = 'alternativas'
+        formAlternativas = request.POST.getlist(alternativasSel, 'Alternativas não carregada')
+
+        objectPergunta = Pergunta(pergunta, formAlternativas)
+        db.child(bancoPergunta).child(pergunta).set(
+            objectPergunta.enviarPerguntaMultiplasRespostasFirebase(formAlternativas))
+
+        return redirect(pagPerguntas)
+
+    return render(request,'perguntas/alterarPerguntas.html', data)

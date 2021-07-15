@@ -44,7 +44,7 @@ def novoModeloFicha (request):
     listaUsuarios = criarListaDoBanco(usuariosSalvos)
     data['listaUsuarios'] = listaUsuarios
 
-    #########  Busca categoria já categoria
+    #########  Busca categorias
     categoriaSalvas = db.child("categoria").get()
     listaCategoria = criarListaDoBanco(categoriaSalvas)
     apenasNomeCategoria = []
@@ -106,6 +106,36 @@ def novoModeloFicha (request):
 
 
     return render(request, "modeloFichas/manipularModeloFicha.html", data)
+
+
+def alterarModeloFicha(request, modFichaAlterar):
+    data = {}  # Dicionário DJango
+    data['datenow'] = [datetime.datetime.now().strftime('%d/%m/%Y'), datetime.datetime.now().strftime('%H:%M:%S')]
+
+    # Parte do decorators de login
+    data['SessionUser'] = getSessionUser(request)
+    data['context'] = ""
+
+    # Informações do modelo
+    infoModeloFicha = db.child(tabelaBanco).child(modFichaAlterar).get().val()
+
+    #########  Busca categoria já categoria
+    categoriaSalvas = db.child("categoria").get()
+    listaCategoria = criarListaDoBanco(categoriaSalvas)
+    apenasNomeCategoria = []
+    for listCat in listaCategoria:
+        apenasNomeCategoria.append(listCat['nome'])
+    for modeloF in infoModeloFicha['categorias']:
+        try:
+            apenasNomeCategoria.remove(modeloF['tituloCategoria'])
+        except:
+            print("Categoria não existe mais")
+
+    data['listaCategoria'] = apenasNomeCategoria
+    data['infoModeloFicha'] = infoModeloFicha
+
+
+    return render(request, 'modeloFichas/alterarModeloFicha.html', data)
 
 
 def excluirModeloFicha(request, modFichaExcluir):

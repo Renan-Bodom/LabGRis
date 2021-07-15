@@ -1,0 +1,54 @@
+{% extends '_layout.html' %}
+{% block title %}ModeloFicha{% endblock %}
+{% block tituloCard %}Alterando modelo ficha "{{ infoModeloFicha.tituloFicha }}" <div style="float: right;"> <a href="/modeloFichas/" class="btn btn-light btn-sm">Voltar para lista</a> <div>{% endblock %}
+
+{% block content %}
+{% load static %}
+
+<br>
+<div class="centralizarDentroDiv">
+    <form method="post">
+        {% csrf_token %}
+        <div>
+            <label>Usuário de cadastro:</label><br>
+            {{ SessionUser.nomeUsuario }}
+            <input type="text" name="idUsuario" value="{{ SessionUser.userId }}" style="display: none;">
+        </div>
+        <br>
+        <div>
+            <label>Data de cadastro:</label><br>
+            {{ datenow.0 }}
+            <input type="text" name="dataAlterado" value="{{ datenow.0 }}" style="display: none;">
+        </div>
+        <br>
+        <div>
+            <label>Nome do Modelo:</label><br>
+            {{ infoModeloFicha.tituloFicha }}
+        </div>
+        <br>
+        <div>
+            <label>Categorias:</label>
+            <select name="dualListBox" multiple="multiple" size="10" title="duallistbox_demo1[]" required>
+                {% for cat in listaCategoria %}
+                    <option>{{ cat }}</option>
+                {% endfor %}
+                {% for cat in infoModeloFicha.categorias %}
+                    <option selected>{{ cat.tituloCategoria }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <br>
+
+        <center>
+            <button type="submit" name="formFicha" class="btn btn-primary">Cadastrar Modelo de Ficha</button>
+        </center>
+    </form>
+</div>
+
+<br>
+
+
+<script src="{% static 'js/modeloFicha.js' %}"></script>
+
+{% endblock %}

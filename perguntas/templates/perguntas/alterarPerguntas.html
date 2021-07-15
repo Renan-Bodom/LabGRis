@@ -1,0 +1,70 @@
+{% extends '_layout.html' %}
+{% block title %}Perguntas{% endblock %}
+{% block tituloCard %}Alterando a pergunta "{{ perguntaSelecionada.tituloPergunta }}" <div style="float: right;"> <a href="/perguntas/" class="btn btn-light btn-sm">Voltar para lista</a> <div>{% endblock %}
+
+{% block content %}
+{% load static %}
+
+<br>
+<div class="centralizarDentroDiv">
+    <form method="post">
+        {% csrf_token %}
+
+        <div class="form-group">
+            <label>Enunciado:</label><br>
+            {{ perguntaSelecionada.tituloPergunta }}
+        </div>
+
+        <br>
+
+        <div class="form-group">
+            <!-- Escolhe Alternativas ou Dissertativa -->
+            <div class="escolhaAltOuDis">
+                <button name="btnAlternativas" type="button" onclick="btnAlter()" class="btn btn-dark">Alternativas</button>
+                <button name="btnDissertativa" type="button" onclick="btnDiss()" class="btn btn-dark">Dissertativa</button>
+            </div>
+            <br>
+            <div id="AltOuDis">
+                {% if perguntaSelecionada.fechada == True %}
+                    <button name='btnAlternativas' type='button' onclick='AddInput()' class='btn btn-secondary btn-sm'>
+                        Mais alternativas!
+                    </button>
+                    <br><br>
+                    {% for alter in perguntaSelecionada.alternativas %}
+                        <input type='text' name='alternativas' value="{{ alter }}" required><br>
+                    {% endfor %}
+                {% endif %}
+
+                {% if perguntaSelecionada.fechada == False %}
+                    Pergunta definida como dissertativa
+                {% endif %}
+            </div>
+        </div>
+
+        <center id="btnCadastrar">
+            {% if perguntaSelecionada.fechada == True %}
+                Alterar para:<br>
+                <button name='formPergunta' type='submit' class='btn btn-primary'>
+                    Única resposta
+                </button>
+                <button name='formPerguntaMultiplasRespostas' type='submit' class='btn btn-primary'>
+                    Multiplas respostas
+                </button>
+            {% endif %}
+
+            {% if perguntaSelecionada.fechada == False %}
+                <button name='formPerguntasDissertativa' type='submit' class='btn btn-primary'>
+                    Cadastrar
+                </button>
+            {% endif %}
+        </center>
+
+    </form>
+</div>
+<br>
+
+
+
+<script src="{% static 'js/perguntas.js' %}"></script>
+
+{% endblock %}
