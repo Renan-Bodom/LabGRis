@@ -176,7 +176,107 @@ def alterarFicha(request, fichaSelec):
     dadosFicha = db.child(tabelaBancoFicha).child(fichaSelec).get().val()
     data['fichaSelec'] = dadosFicha
 
+    contListaCategBanco = len(dadosFicha['categorias'])
+
+    listaApenasPerguntas = []
+    for categorias in dadosFicha['categorias']:
+        for perguntas in categorias['perguntas']:
+            listaApenasPerguntas.append(perguntas['tituloPergunta'])
+
     if request.method == "POST":
+        listaPerguntasForm = []
+        for perg in listaApenasPerguntas:
+            pergunta = perg
+            perguntaForm = request.POST.get(pergunta, 'Pergunta não carregada')
+            resposta = ('resposta' + perg)
+            respostaForm = request.POST.get(resposta, 'Resposta não carregada')
+            tituloFicha = 'tituloFicha'
+            tituloFichaForm = request.POST.get(tituloFicha, 'Titulo Ficha não carregada')
+            tituloCategoriaF = 'tituloCategoria'
+            tituloCategoriaForm = request.POST.get(tituloCategoriaF, 'Categoria não carregada')
+
+            objectPerguntaPreenchida = Pergunta(perguntaForm, respostaForm)
+            listaPerguntasForm.append(objectPerguntaPreenchida)
+
+
+        ########## Listando categorias
+        listaCategoriaSalvaFicha = []
+        for ContFor in range(contListaCategBanco):
+            categoriaDoBanco = db.child(tabelaBancoFicha).child(fichaSelec).child("categorias").child(
+                ContFor).get()  # Encontra cada categoria da ficha selecionada
+            categoriaSalvaFicha = criarListaDoBanco(categoriaDoBanco)  # Carrega os dados da categoria
+            tituloCategoria = categoriaSalvaFicha[1]  # Título categoria
+            perguntasFicha = categoriaSalvaFicha[0]  # Perguntas da categoria
+
+            perguntaDaLista = []
+            for per in perguntasFicha:
+                perguntaDaLista.append(per)
+            listaDePerguntas = []
+            for perguntas in perguntaDaLista:
+                listaAlternativas = []
+                try:
+                    for alter in perguntas["alternativas"]:
+                        alternativaFicha = alter["tituloAlternativa"]
+                        listaAlternativas.append(alternativaFicha)
+                except:
+                    listaAlternativas.append("dissertativa")
+                objectPerguntas = Pergunta(perguntas["tituloPergunta"], listaAlternativas)
+                listaDePerguntas.append(objectPerguntas)
+            objectCategoria = Categoria(tituloCategoria, 1, listaDePerguntas)
+            listaCategoriaSalvaFicha.append(objectCategoria)
+
+        ##################################################################### Salvando no banco
+        contCat = 0
+        objectFichaPreenchida = FichaPreenchida(tituloFichaForm, request.session.get('userId'),
+                                                listaCategoriaSalvaFicha, fichaSelec)
+        # Cria a ficha no banco
+        db.child(tabelaBancoFicha).child(objectFichaPreenchida.get_tituloFicha()).set(
+            objectFichaPreenchida.enviarFichaFirebase())
+
+        # Percorre cada categoria
+        for categoriaList in listaCategoriaSalvaFicha:
+            idTeste = 0
+            objectCategoriaPreenchida = Categoria(categoriaList.get_tituloCategoria(), idTeste,
+                                                  categoriaList.get_objectPerguntas())
+            # Salva as categorias
+            db.child(tabelaBancoFicha).child(objectFichaPreenchida.get_tituloFicha()).update(
+                objectFichaPreenchida.updateFichaCategoriaFirebase(categoriaList.get_tituloCategoria(), idTeste,
+                                                                   contCat))
+            contP = 0
+            for perg in objectCategoriaPreenchida.get_objectPerguntas():  # Salva as perguntas
+                db.child(tabelaBancoFicha).child(objectFichaPreenchida.get_tituloFicha()).child('categorias').child(
+                    contCat).update(objectFichaPreenchida.updateFichaPerguntasFirebase(perg.get_tituloPergunta(),
+                                                                                       perg.get_tituloAlternativa(),
+                                                                                       contP))
+                contAlt = 0
+                for alter in perg.get_tituloAlternativa():  # Salva as alternativas
+                    if alter == "dissertativa":
+                        for pergForm in listaPerguntasForm:
+                            if perg.get_tituloPergunta() == pergForm.get_tituloPergunta():
+                                respostaDissertativa = pergForm.get_tituloAlternativa()
+                        db.child(tabelaBancoFicha).child(objectFichaPreenchida.get_tituloFicha()).child(
+                            'categorias').child(contCat).child('perguntas').child(contP).update(
+                            objectFichaPreenchida.updateFichaAlternativasDissertativaFirebase(respostaDissertativa,
+                                                                                              contAlt))
+
+                    else:
+                        marcadoComo = False
+                        for pergForm in listaPerguntasForm:  # Salva a resposta (Para alterar resposta fazer algo parecido com este)
+                            if perg.get_tituloPergunta() == pergForm.get_tituloPergunta():
+                                if alter == pergForm.get_tituloAlternativa():
+                                    marcadoComo = True
+                        db.child(tabelaBancoFicha).child(objectFichaPreenchida.get_tituloFicha()).child(
+                            'categorias').child(contCat).child('perguntas').child(contP).update(
+                            objectFichaPreenchida.updateFichaAlternativasFirebase(alter, contAlt, marcadoComo))
+
+                    contAlt = contAlt + 1
+
+                contP = contP + 1
+
+            contCat = contCat + 1
+
+        # html = "<html><body><center><h1>Pergunta:" + respostaForm + "</h1></center></body></html>"
+
         return redirect('url_responderFicha')
 
 
