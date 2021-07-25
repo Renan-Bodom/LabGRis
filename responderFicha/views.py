@@ -30,6 +30,12 @@ def responderFicha(request):
 
     #print(listaFicha)
 
+    if request.method == "POST":
+        codFicha = request.POST.getlist('codFicha', 'Pergunta não carregada')
+        print(codFicha)
+
+        return redirect(pgCampo)
+
     return render(request, 'responderFicha/responderFicha.html', data)
 
 
