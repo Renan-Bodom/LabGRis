@@ -1,4 +1,7 @@
 from django.shortcuts import render, redirect
+import pandas as pd
+import datetime
+from django.http import HttpResponse
 from LabGRis.decorators import validate_session, getSessionUser
 from LabGRis.funcoesCompartilhadas import criarListaDoBanco, criarListaDoBancoKEY
 from LabGRis.pyrebase_settings import db
@@ -20,21 +23,35 @@ def responderFicha(request):
     data['SessionUser'] = getSessionUser(request)
     data['context'] = ""
 
-    # Bancos
-    bancoFicha = "fichaAppTeste"
-
     #########  Busca Modelos de Ficha já cadastradas
-    fichaSalvas = db.child(bancoFicha).get()
+    fichaSalvas = db.child(tabelaBancoFicha).get()
     listaFicha = criarListaDoBanco(fichaSalvas)
     data['listaFicha'] = listaFicha
 
-    #print(listaFicha)
-
     if request.method == "POST":
         codFicha = request.POST.getlist('codFicha', 'Pergunta não carregada')
-        print(codFicha)
 
-        return redirect(pgCampo)
+        # Carregando dados das fichas selecionadas
+        dadosFichas = []
+        for ficha in codFicha:
+            organizandoFicha = []
+            dadosDaFicha = db.child(tabelaBancoFicha).child(ficha).get().val()
+
+            organizandoFicha.append(dadosDaFicha['modeloFicha'])
+            organizandoFicha.append(dadosDaFicha['tituloFicha'])
+
+            dadosFichas.append(organizandoFicha)
+
+        # Transformando os dados em um DataFrame
+        dadosFicha_df = pd.DataFrame(dadosFichas, columns=['Modelo ficha', 'Ficha'])
+        print("DataFrame da(s) fichas:", dadosFicha_df)
+
+        # Disponibilizando CSV para download
+        responseCSV = HttpResponse(content_type='text/csv')
+        responseCSV['Content-Disposition'] = 'attachment; filename=CSV_LabGRis ' + datetime.datetime.now().strftime('%d/%m/%Y') + '.csv'
+        dadosFicha_df.to_csv(path_or_buf=responseCSV, index=False)
+
+        return responseCSV
 
     return render(request, 'responderFicha/responderFicha.html', data)
 
