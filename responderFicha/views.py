@@ -1,4 +1,7 @@
 from django.shortcuts import render, redirect
+import pandas as pd
+import datetime
+from django.http import HttpResponse
 from LabGRis.decorators import validate_session, getSessionUser
 from LabGRis.funcoesCompartilhadas import criarListaDoBanco, criarListaDoBancoKEY
 from LabGRis.pyrebase_settings import db
@@ -20,20 +23,61 @@ def responderFicha(request):
     data['SessionUser'] = getSessionUser(request)
     data['context'] = ""
 
-    # Bancos
-    bancoFicha = "fichaAppTeste"
-
     #########  Busca Modelos de Ficha já cadastradas
-    fichaSalvas = db.child(bancoFicha).get()
+    fichaSalvas = db.child(tabelaBancoFicha).get()
     listaFicha = criarListaDoBanco(fichaSalvas)
     data['listaFicha'] = listaFicha
 
-    #print(listaFicha)
-
     if request.method == "POST":
         codFicha = request.POST.getlist('codFicha', 'Pergunta não carregada')
-        print(codFicha)
 
+        # Lista para colocar dados das fichas
+        modeloFicha = []
+        tituloFicha = []
+        perguntasDasFichas = set()
+        # Carregando dados das fichas selecionadas
+        for ficha in codFicha:
+            dadosDaFicha = db.child(tabelaBancoFicha).child(ficha).get().val()
+
+            modeloFicha.append(dadosDaFicha['modeloFicha'])
+            tituloFicha.append(dadosDaFicha['tituloFicha'])
+
+            for cat in dadosDaFicha['categorias']:
+                for per in cat['perguntas']:
+                    perguntasDasFichas.add(per['tituloPergunta'])
+
+        print('Perguntas', perguntasDasFichas)
+        for perF in perguntasDasFichas:
+            for ficha in codFicha:
+                dadosCat = db.child(tabelaBancoFicha).child(ficha).child('categorias').get().val()
+                for cat in dadosCat:
+                    for perg in cat['perguntas']:
+                        if perg['tituloPergunta'] == perF:
+                            try:
+                                print("Diss:", perg['resposta'])
+                            except:
+                                for alt in perg['alternativas']:
+                                    if alt['resposta'] == True:
+                                        print("Alt:", alt['tituloAlternativa'])
+
+
+        # Montando o dicionario para converter em DataFrame
+        dadosFichas = {
+            'Modelo ficha': modeloFicha,
+            'Ficha':        tituloFicha
+            }
+
+
+        # Transformando os dados em um DataFrame
+        dadosFicha_df = pd.DataFrame(data=dadosFichas)
+        print("DataFrame da(s) fichas:\n", dadosFicha_df)
+
+        # Disponibilizando CSV para download
+        responseCSV = HttpResponse(content_type='text/csv')
+        responseCSV['Content-Disposition'] = 'attachment; filename=CSV_LabGRis ' + datetime.datetime.now().strftime('%d/%m/%Y') + '.csv'
+        dadosFicha_df.to_csv(path_or_buf=responseCSV, index=False)
+
+        #return responseCSV
         return redirect(pgCampo)
 
     return render(request, 'responderFicha/responderFicha.html', data)
