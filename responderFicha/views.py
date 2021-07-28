@@ -52,11 +52,15 @@ def responderFicha(request):
             'Ficha':        tituloFicha
             }
 
-        print('Perguntas', perguntasDasFichas)
+        # Transformando os dados em um DataFrame
+        dadosFicha_df = pd.DataFrame(data=dadosFichas)
+        print("DataFrame da(s) fichas:\n", dadosFicha_df)
+
+        #print('Perguntas', perguntasDasFichas)
         respostasDasPerguntas = []
         for ficha in codFicha:
             respostas = ['-'] * len(perguntasDasFichas)
-            print("----Ficha:", ficha)
+            #print("----Ficha:", ficha)
             dadosCat = db.child(tabelaBancoFicha).child(ficha).child('categorias').get().val()
             for cat in dadosCat:
                 for perg in cat['perguntas']:
@@ -76,9 +80,8 @@ def responderFicha(request):
         respostasDasPerguntas_df = pd.DataFrame(respostasDasPerguntas, columns=perguntasDasFichas)
         print("Respostas das fichas:\n", respostasDasPerguntas_df)
 
-        # Transformando os dados em um DataFrame
-        dadosFicha_df = pd.DataFrame(data=dadosFichas)
-        print("DataFrame da(s) fichas:\n", dadosFicha_df)
+        # Juntando Dados das fichas com as respostas
+
 
         # Disponibilizando CSV para download
         responseCSV = HttpResponse(content_type='text/csv')
