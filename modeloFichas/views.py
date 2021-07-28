@@ -135,6 +135,56 @@ def alterarModeloFicha(request, modFichaAlterar):
     data['infoModeloFicha'] = infoModeloFicha
 
 
+    if request.method == "POST":
+        formIdUsuario = request.POST.get('idUsuario', '')
+        formSelCategoria = request.POST.getlist('dualListBox', '')
+
+        listaObjectCategoria = []
+        for cat in formSelCategoria:
+            listaObjectPergunta = []
+            categoriaBanco = db.child("categoria").child(cat).child("tituloPerguntas").get()
+            dadosCategoria = criarListaDoBanco(categoriaBanco)
+
+            for perg in dadosCategoria:
+                if perg['fechada'] == True:  # Checando se a pergunta é fechada
+                    objectPergunta = Pergunta(perg["tituloPergunta"], perg["alternativas"])
+                    listaObjectPergunta.append(objectPergunta)
+                else:
+                    objectPergunta = Pergunta(perg["tituloPergunta"], 'dissertativa')
+                    listaObjectPergunta.append(objectPergunta)
+                    #print(objectPergunta.get_tituloPergunta(), objectPergunta.get_tituloAlternativa())
+
+            idCateogira = 1  #########################################################Precisa arrumar!!
+            objectCategoria = Categoria(cat, idCateogira, listaObjectPergunta)
+            listaObjectCategoria.append(objectCategoria)
+
+        objectModeloFicha = Ficha(modFichaAlterar, formIdUsuario, listaObjectCategoria)
+
+        # Criando o nó do modelo de ficha
+        db.child(tabelaBanco).child(modFichaAlterar).set(objectModeloFicha.enviarFichaFirebase())
+
+        contCat = 0
+        for lCat in objectModeloFicha.get_objectCategorias():
+            db.child(tabelaBanco).child(modFichaAlterar).update(objectModeloFicha.updateFichaCategoriaFirebase(lCat.get_tituloCategoria(), lCat.get_idCategoria(), contCat))
+            contPG = 0
+            for pg in lCat.get_objectPerguntas():
+                infoPergunta = db.child("categoria").child(lCat.get_tituloCategoria()).child("tituloPerguntas").child(
+                    pg.get_tituloPergunta()).get().val()                        # Recupera informações da pergunta
+
+                if infoPergunta['fechada'] == True:
+                    if infoPergunta['multiplasRespostas'] == True:
+                        db.child(tabelaBanco).child(modFichaAlterar).child("categorias").child(contCat).child("perguntas").child(contPG).update(pg.enviarModeloPerguntaMultiplasRespostasFirebase(pg.get_tituloAlternativa()))
+                    else:
+                        db.child(tabelaBanco).child(modFichaAlterar).child("categorias").child(contCat).child("perguntas").child(contPG).update(pg.enviarModeloPerguntaFirebase(pg.get_tituloAlternativa()))
+                else:
+                    db.child(tabelaBanco).child(modFichaAlterar).child("categorias").child(contCat).child("perguntas").child(contPG).update(pg.enviarModeloPerguntaDissertativaFirebase())
+
+                contPG = contPG + 1
+            contCat = contCat + 1
+
+        return redirect(redirectModeloFicha)
+
+
     return render(request, 'modeloFichas/alterarModeloFicha.html', data)
 
 
