@@ -25,17 +25,17 @@ def responderFicha(request):
 
     #########  Busca Modelos de Ficha já cadastradas
     fichaSalvas = db.child(tabelaBancoFicha).get()
-    listaFicha = criarListaDoBanco(fichaSalvas)
+    listaFicha  = criarListaDoBanco(fichaSalvas)
     data['listaFicha'] = listaFicha
 
     if request.method == "POST":
         codFicha = request.POST.getlist('codFicha', 'Pergunta não carregada')
 
         # Lista para colocar dados das fichas
-        modeloFicha = []
-        tituloFicha = []
-        perguntasDasFichas = set()
-        # Carregando dados das fichas selecionadas
+        modeloFicha         = []
+        tituloFicha         = []
+        perguntasDasFichas  = set()
+        ## Carregando dados das fichas selecionadas
         for ficha in codFicha:
             dadosDaFicha = db.child(tabelaBancoFicha).child(ficha).get().val()
 
@@ -46,39 +46,51 @@ def responderFicha(request):
                 for per in cat['perguntas']:
                     perguntasDasFichas.add(per['tituloPergunta'])
 
-        print('Perguntas', perguntasDasFichas)
-        for perF in perguntasDasFichas:
-            for ficha in codFicha:
-                dadosCat = db.child(tabelaBancoFicha).child(ficha).child('categorias').get().val()
-                for cat in dadosCat:
-                    for perg in cat['perguntas']:
-                        if perg['tituloPergunta'] == perF:
-                            try:
-                                print("Diss:", perg['resposta'])
-                            except:
-                                for alt in perg['alternativas']:
-                                    if alt['resposta'] == True:
-                                        print("Alt:", alt['tituloAlternativa'])
-
-
         # Montando o dicionario para converter em DataFrame
         dadosFichas = {
-            'Modelo ficha': modeloFicha,
-            'Ficha':        tituloFicha
+            'Segue o modelo': modeloFicha,
+            'Cód. Ficha':        tituloFicha
             }
-
 
         # Transformando os dados em um DataFrame
         dadosFicha_df = pd.DataFrame(data=dadosFichas)
-        print("DataFrame da(s) fichas:\n", dadosFicha_df)
+        #print("DataFrame da(s) fichas:\n", dadosFicha_df)
+
+        #print('Perguntas', perguntasDasFichas)
+        respostasDasPerguntas = []
+        for ficha in codFicha:
+            respostas = [''] * len(perguntasDasFichas)
+            #print("----Ficha:", ficha)
+            dadosCat = db.child(tabelaBancoFicha).child(ficha).child('categorias').get().val()
+            for cat in dadosCat:
+                for perg in cat['perguntas']:
+                    for perF in perguntasDasFichas:
+                        if perg['tituloPergunta'] == perF:
+                            try:
+                                #print("Diss", list(perguntasDasFichas).index(perF), "\b: ", perg['resposta'])
+                                respostas[list(perguntasDasFichas).index(perF)] = perg['resposta']
+                            except:
+                                for alt in perg['alternativas']:
+                                    if alt['resposta'] == True:
+                                        #print("Per", list(perguntasDasFichas).index(perF), "\b: ", alt['tituloAlternativa'])
+                                        respostas[list(perguntasDasFichas).index(perF)] = alt['tituloAlternativa']
+            respostasDasPerguntas.append(respostas)
+
+        # Montando dataframe das respostas
+        respostasDasPerguntas_df = pd.DataFrame(respostasDasPerguntas, columns=perguntasDasFichas)
+        #print("Respostas das fichas:\n", respostasDasPerguntas_df)
+
+        # Juntando dados das fichas com as respostas
+        csvFichas = pd.merge(dadosFicha_df, respostasDasPerguntas_df, left_index=True, right_index=True)
+        #print("DataFrame das fichas:\n", csvFichas)
 
         # Disponibilizando CSV para download
         responseCSV = HttpResponse(content_type='text/csv')
         responseCSV['Content-Disposition'] = 'attachment; filename=CSV_LabGRis ' + datetime.datetime.now().strftime('%d/%m/%Y') + '.csv'
-        dadosFicha_df.to_csv(path_or_buf=responseCSV, index=False)
+        csvFichas.to_csv(path_or_buf=responseCSV, index=False)
 
-        #return responseCSV
-        return redirect(pgCampo)
+        return responseCSV
+        #return redirect(pgCampo)
 
     return render(request, 'responderFicha/responderFicha.html', data)
 
