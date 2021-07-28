@@ -106,11 +106,11 @@ def alterarCategoria(request, categoria):
     dadosCategoria = db.child(bancoCategoria).child(categoria).get().val()
 
     #########  Busca perguntas para listar no dualList
-    perguntasSalvas = db.child("perguntas").get()
+    perguntasSalvas = db.child("perguntas").get().val()
     apenasPerguntas = []
     # Monta lista de perguntas
     for perguntas in perguntasSalvas:
-        apenasPerguntas.append(perguntas.val()['tituloPergunta'])
+        apenasPerguntas.append(perguntas)
     # Remove as já selecionadas
     for pergCategoria in dadosCategoria['tituloPerguntas']:
         apenasPerguntas.remove(pergCategoria)
