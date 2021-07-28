@@ -77,8 +77,8 @@ def responderFicha(request):
         responseCSV['Content-Disposition'] = 'attachment; filename=CSV_LabGRis ' + datetime.datetime.now().strftime('%d/%m/%Y') + '.csv'
         dadosFicha_df.to_csv(path_or_buf=responseCSV, index=False)
 
-        #return responseCSV
-        return redirect(pgCampo)
+        return responseCSV
+        #return redirect(pgCampo)
 
     return render(request, 'responderFicha/responderFicha.html', data)
 
