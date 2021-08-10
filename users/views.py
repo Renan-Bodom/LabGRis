@@ -163,3 +163,15 @@ def removerUsuario(request, userRemover):
     #db.child('usersParaRemover').update({"userId " + userRemover: userRemover})
 
     return redirect('/usuario/listar/')
+
+def esqueciSenha(request):
+    data = {}
+
+    if request.method == "POST":
+        email = request.POST.get('txtUserEmail', '')
+        auth.send_password_reset_email(email)
+
+        return HttpResponse("<html><body><center>Verifique seu e-mail:<br>" + email +
+                            "<br><br><a href='/usuario/entrar/'>Voltar</a></center></body></html>")
+
+    return render(request, "users/esqueceuSenha.html", data)
