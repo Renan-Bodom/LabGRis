@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect
+from django.http import HttpResponse
 from django.contrib import messages
 import sys, datetime
 from LabGRis.pyrebase_settings import db, auth
@@ -25,6 +26,14 @@ def valida_senha(request):
         sign_user = auth.refresh(sign_user['refreshToken'])
 
         userLab = db.child("users").child(sign_user['userId']).get()
+
+        # Verificando se tem solicitação para excluir usuário
+        excluirUser = db.child(bancoUsers).child(sign_user['userId']).child("excluirUser").get().val()
+        if excluirUser == True:
+            db.child(bancoUsers).child(sign_user['userId']).remove()
+            auth.delete_user_account(sign_user['idToken'])
+            return HttpResponse("<html><body><center>Este usuário foi removido!<br>" + userLab.val()['nome'] + "<br>"
+                                "<br><a href='/usuario/entrar/'>Voltar</a></center></body></html>")
 
         request.session['idToken'] = sign_user['idToken']
         request.session['userEmail'] = email
@@ -65,7 +74,11 @@ def listaUsers (request):
     for dadosUser in usuariosSalvos.each():
         dadosUser2 = dadosUser.val()
         dadosUser2['key'] = dadosUser.key()
-        listaUsuarios.append(dadosUser2)
+        # Ocultando usuário marcados com exclusão
+        if dadosUser.val()['excluirUser'] == True:
+            dadosUser2 = None
+        else:
+            listaUsuarios.append(dadosUser2)
 
     data['listaUsuarios'] = listaUsuarios
 
@@ -90,13 +103,20 @@ def novoUsuario (request):
         email = request.POST.get('email', '')
         locaisFrequentados = request.POST.get('locaisFrequentados', '')
 
-        sign_user = auth.create_user_with_email_and_password(email, 'labgris123')
+        # Verificando se e-mail já foi cadastrado
+        try:
+            sign_user = auth.create_user_with_email_and_password(email, 'labgris123')
+        except:
+            return HttpResponse("<html><body><center>E-mail cadastrado!<br>" + email + "<br><br>"
+                                "Mudar excluirUser para false no banco<br><br>"
+                                "<a href='/usuario/listar/'>Voltar</a></center></body></html>")
         sign_user = auth.refresh(sign_user['refreshToken'])
         userId = sign_user['userId']
 
 
         formCadastro = {'data': data,
                         'nome': nome,
+                        'excluirUser': False,
                         'perfil': perfil,
                         'cpf': cpf,
                         'email': email,
@@ -138,8 +158,23 @@ def alterarUsuario(request, userAlterar):
 
 def removerUsuario(request, userRemover):
     data = {}
-    #db.child(bancoUsers).child(userRemover).remove()
 
-    db.child('usersParaRemover').update({"userId " + userRemover: userRemover})
+    # Remover informações do banco
+    excluirUser = {'excluirUser': True}
+    db.child(bancoUsers).child(userRemover).update(excluirUser)
+
+    #db.child('usersParaRemover').update({"userId " + userRemover: userRemover})
 
     return redirect('/usuario/listar/')
+
+def esqueciSenha(request):
+    data = {}
+
+    if request.method == "POST":
+        email = request.POST.get('txtUserEmail', '')
+        auth.send_password_reset_email(email)
+
+        return HttpResponse("<html><body><center>Verifique seu e-mail:<br>" + email +
+                            "<br><br><a href='/usuario/entrar/'>Voltar</a></center></body></html>")
+
+    return render(request, "users/esqueceuSenha.html", data)
