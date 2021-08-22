@@ -32,7 +32,8 @@ def valida_senha(request):
         if excluirUser == True:
             db.child(bancoUsers).child(sign_user['userId']).remove()
             auth.delete_user_account(sign_user['idToken'])
-            return HttpResponse("<html><body><center>Este usuário foi removido!<br>" + userLab.val()['nome'] + "</center></body></html>")
+            return HttpResponse("<html><body><center>Este usuário foi removido!<br>" + userLab.val()['nome'] + "<br>"
+                                "<br><a href='/usuario/entrar/'>Voltar</a></center></body></html>")
 
         request.session['idToken'] = sign_user['idToken']
         request.session['userEmail'] = email
@@ -106,7 +107,9 @@ def novoUsuario (request):
         try:
             sign_user = auth.create_user_with_email_and_password(email, 'labgris123')
         except:
-            return HttpResponse("<html><body><center>E-mail cadastrado!<br>" + email + "</center></body></html>")
+            return HttpResponse("<html><body><center>E-mail cadastrado!<br>" + email + "<br><br>"
+                                "Mudar excluirUser para false no banco<br><br>"
+                                "<a href='/usuario/listar/'>Voltar</a></center></body></html>")
         sign_user = auth.refresh(sign_user['refreshToken'])
         userId = sign_user['userId']
 
