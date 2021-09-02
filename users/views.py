@@ -30,8 +30,8 @@ def valida_senha(request):
         # Verificando se tem solicitação para excluir usuário
         excluirUser = db.child(bancoUsers).child(sign_user['userId']).child("excluirUser").get().val()
         if excluirUser == True:
-            db.child(bancoUsers).child(sign_user['userId']).remove()
             auth.delete_user_account(sign_user['idToken'])
+            db.child(bancoUsers).child(sign_user['userId']).remove()
             return render(request, "users/mensagens.html", {'user': userLab.val()['nome']})
 
         request.session['idToken'] = sign_user['idToken']
