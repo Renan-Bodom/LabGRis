@@ -32,8 +32,7 @@ def valida_senha(request):
         if excluirUser == True:
             db.child(bancoUsers).child(sign_user['userId']).remove()
             auth.delete_user_account(sign_user['idToken'])
-            return HttpResponse("<html><body><center>Este usuário foi removido!<br>" + userLab.val()['nome'] + "<br>"
-                                "<br><a href='/usuario/entrar/'>Voltar</a></center></body></html>")
+            return render(request, "users/mensagens.html", {'user': userLab.val()['nome']})
 
         request.session['idToken'] = sign_user['idToken']
         request.session['userEmail'] = email
