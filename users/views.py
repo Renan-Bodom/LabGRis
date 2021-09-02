@@ -27,18 +27,18 @@ def valida_senha(request):
 
         userLab = db.child("users").child(sign_user['userId']).get()
 
-        # Verificando se tem solicitação para excluir usuário
-        excluirUser = db.child(bancoUsers).child(sign_user['userId']).child("excluirUser").get().val()
-        if excluirUser == True:
-            db.child(bancoUsers).child(sign_user['userId']).remove()
-            auth.delete_user_account(sign_user['idToken'])
-            return render(request, "users/mensagens.html", {'user': userLab.val()['nome']})
-
         request.session['idToken'] = sign_user['idToken']
         request.session['userEmail'] = email
         request.session['userId'] = sign_user['userId']
         request.session['nomeUsuario'] = userLab.val()['nome']
         request.session['perfilUsuario'] = userLab.val()['perfil']
+
+        # Verificando se tem solicitação para excluir usuário
+        excluirUser = db.child(bancoUsers).child(sign_user['userId']).child("excluirUser").get().val()
+        if excluirUser == True:
+            auth.delete_user_account(sign_user['idToken'])
+            # db.child(bancoUsers).child(sign_user['userId']).remove()
+            return render(request, "users/mensagens.html", {'user': userLab.val()['nome']})
 
 
     except:
