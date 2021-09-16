@@ -159,7 +159,8 @@ def removerUsuario(request, userRemover):
     data = {}
 
     # Remover informações do banco
-    excluirUser = {'excluirUser': True}
+    excluirUser = {'excluirUser': True,
+                   'data': datetime.datetime.now().strftime('%d/%m/%Y')}
     db.child(bancoUsers).child(userRemover).update(excluirUser)
 
     #db.child('usersParaRemover').update({"userId " + userRemover: userRemover})
@@ -192,7 +193,8 @@ def filaExclusao(request):
         usuario = request.POST.get('userRecuperar', '')
 
         # Recuperar usuario
-        escreverNoBanco = {'excluirUser': False}
+        escreverNoBanco = {'excluirUser': False,
+                           'data': datetime.datetime.now().strftime('%d/%m/%Y')}
         db.child(bancoUsers).child(usuario).update(escreverNoBanco)
 
         return redirect('/usuario/filaExclusao/')
