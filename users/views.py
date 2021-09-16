@@ -189,9 +189,13 @@ def filaExclusao(request):
     data['listaUsuarios'] = listaUsuarios
 
     if request.method == "POST":
-        user = request.POST.get('userRecuperar', '')
+        usuario = request.POST.get('userRecuperar', '')
 
-        print("Recuperar:", user)
+        # Recuperar usuario
+        escreverNoBanco = {'excluirUser': False}
+        db.child(bancoUsers).child(usuario).update(escreverNoBanco)
+
+        return redirect('/usuario/filaExclusao/')
 
     return render(request, "users/filaExclusao.html", data)
 
