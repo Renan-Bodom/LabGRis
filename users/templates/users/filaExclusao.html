@@ -1,0 +1,47 @@
+{% extends '_layout.html' %}
+{% block title %}Lista exclusão{% endblock %}
+{% block tituloCard %}Lista de usuários excluidos: <div style="float: right;"> <a href="/usuario/listar/" class="btn btn-light btn-sm">Voltar para lista</a> <div>{% endblock %}
+
+{% block content %}
+
+  <center>
+
+    <br>
+
+    <div class="form-group input-group">
+        <span class="input-group-addon"><i class="glyphicon glyphicon-search"></i></span>
+        <input name="consulta" id="txt_consulta" placeholder="Buscar..." type="text" class="form-control">
+    </div>
+
+    <table id="tabela" class="table table-hover">
+        <thead>
+            <tr>
+                <th>Nome</th>
+                <th>Data exclusão</th>
+                <th><center>Recuperar</center></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for users in listaUsuarios %}
+            <tr>
+
+                <td>{{ users.nome }}</td>
+                <td>{{ users.data }}</td>
+                <td class="colunaManipular">
+                    <!-- https://primer.style/octicons/pencil-24 -->
+                    <center>
+                        <button type="submit" class="btn btn-outline-primary btn-sm"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path d="M10.53 5.03a.75.75 0 10-1.06-1.06l-6.25 6.25a.75.75 0 000 1.06l6.25 6.25a.75.75 0 101.06-1.06L5.56 11.5H17a3.248 3.248 0 013.25 3.248v4.502a.75.75 0 001.5 0v-4.502A4.748 4.748 0 0017 10H5.56l4.97-4.97z"></path></svg></button>
+                    </center>
+                </td>
+
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+
+
+  </center>
+
+
+{% endblock %}
