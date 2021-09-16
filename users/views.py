@@ -189,7 +189,9 @@ def filaExclusao(request):
     data['listaUsuarios'] = listaUsuarios
 
     if request.method == "POST":
-        print("AQUI")
+        user = request.POST.get('userRecuperar', '')
+
+        print("Recuperar:", user)
 
     return render(request, "users/filaExclusao.html", data)
 
