@@ -28,7 +28,11 @@
                         <input type="text" id="respostaDissertativa" name="resposta{{ perg.pergunta }}" class="form-control, w-50">
                     {% else %}
                         {% for alt in perg.alternativas %}
-                            <input type="radio" id="respostaRadio" name="resposta{{ perg.pergunta }}" value="{{ alt }}">
+                            {% if perg.multiplasRespostas == False %}
+                                <input type="radio" id="respostaRadio" name="resposta{{ perg.pergunta }}" value="{{ alt }}">
+                            {% else %}
+                                <input type="checkbox" id="respostaCheckBox" name="resposta{{ perg.pergunta }}" value="{{ alt }}">
+                            {% endif %}
                             {{ alt }}
                         {% endfor %}
                     {% endif %}

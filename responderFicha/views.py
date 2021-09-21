@@ -148,7 +148,7 @@ def preenchendoFicha(request, fichaSelec):
                     listaAlternativas.append(alternativaFicha)
             except:
                 listaAlternativas.append("dissertativa")
-            objectPerguntas = Pergunta(perguntas["tituloPergunta"], listaAlternativas)
+            objectPerguntas = Pergunta(perguntas["tituloPergunta"], listaAlternativas, perguntas["multiplasRespostas"])
             listaDePerguntas.append(objectPerguntas)
         objectCategoria = Categoria(tituloCategoria, 1, listaDePerguntas)
         listaCategoriaSalvaFicha.append(objectCategoria)
@@ -161,9 +161,11 @@ def preenchendoFicha(request, fichaSelec):
         juntaInfPerguntas.append([cat.get_tituloCategoria()])
         juntPerguntas = []
         for perg in cat.get_objectPerguntas():
-            juntPerguntas.append({"pergunta": perg.get_tituloPergunta(), "alternativas": perg.get_tituloAlternativa})
+            juntPerguntas.append({"pergunta": perg.get_tituloPergunta(), "alternativas": perg.get_tituloAlternativa(), "multiplasRespostas": perg.get_multiplasRespostas})
             listaApenasPerguntas.append(perg.get_tituloPergunta())
         juntaInfPerguntas.append(juntPerguntas)
+        #juntaInfPerguntas.append(perg)
+        #print("AQUI:", cat)
         listaPergutas.append(juntaInfPerguntas)
 
     data['categoriaSelec'] = listaPergutas
