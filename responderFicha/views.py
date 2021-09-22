@@ -199,7 +199,12 @@ def preenchendoFicha(request, fichaSelec):
             db.child(tabelaBancoFicha).child(objectFichaPreenchida.get_tituloFicha()).update(objectFichaPreenchida.updateFichaCategoriaFirebase(categoriaList.get_tituloCategoria(), idTeste, contCat))
             contP = 0
             for perg in objectCategoriaPreenchida.get_objectPerguntas():  # Salva as perguntas
-                db.child(tabelaBancoFicha).child(objectFichaPreenchida.get_tituloFicha()).child('categorias').child(contCat).update(objectFichaPreenchida.updateFichaPerguntasFirebase(perg.get_tituloPergunta(), perg.get_tituloAlternativa(), contP))
+                db.child(tabelaBancoFicha).child(objectFichaPreenchida.get_tituloFicha()).child(
+                    'categorias').child(contCat).update(
+                    objectFichaPreenchida.updateFichaPerguntasFirebase(perg.get_tituloPergunta(),
+                                                                       perg.get_tituloAlternativa(),
+                                                                       contP,
+                                                                       perg.get_multiplasRespostas()))
                 contAlt = 0
                 for alter in perg.get_tituloAlternativa():  # Salva as alternativas
                     if alter == "dissertativa":
@@ -284,7 +289,7 @@ def alterarFicha(request, fichaSelec):
                         listaAlternativas.append(alternativaFicha)
                 except:
                     listaAlternativas.append("dissertativa")
-                objectPerguntas = Pergunta(perguntas["tituloPergunta"], listaAlternativas)
+                objectPerguntas = Pergunta(perguntas["tituloPergunta"], listaAlternativas, perguntas["multiplasRespostas"])
                 listaDePerguntas.append(objectPerguntas)
             objectCategoria = Categoria(tituloCategoria, 1, listaDePerguntas)
             listaCategoriaSalvaFicha.append(objectCategoria)
@@ -311,7 +316,8 @@ def alterarFicha(request, fichaSelec):
                 db.child(tabelaBancoFicha).child(objectFichaPreenchida.get_tituloFicha()).child('categorias').child(
                     contCat).update(objectFichaPreenchida.updateFichaPerguntasFirebase(perg.get_tituloPergunta(),
                                                                                        perg.get_tituloAlternativa(),
-                                                                                       contP))
+                                                                                       contP,
+                                                                                       perg.get_multiplasRespostas()))
                 contAlt = 0
                 for alter in perg.get_tituloAlternativa():  # Salva as alternativas
                     if alter == "dissertativa":

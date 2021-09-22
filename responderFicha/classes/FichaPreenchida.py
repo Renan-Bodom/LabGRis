@@ -57,12 +57,12 @@ class FichaPreenchida:
 
         return data
 
-    def updateFichaPerguntasFirebase(self, pergunta, alternativas, cont):
+    def updateFichaPerguntasFirebase(self, pergunta, alternativas, cont, multiplasRespostas):
 
         data = {
             "perguntas/" + str(cont) + "/": {
                 "fechada": True,
-                "multiplasRespostas": False,
+                "multiplasRespostas": multiplasRespostas,
                 "tituloPergunta": pergunta
                 #"alternativas": alternativas
             }
@@ -82,11 +82,11 @@ class FichaPreenchida:
         return data
 
 
-    def updateFichaAlternativasDissertativaFirebase(self, respostaDissertativa, cont):
+    def updateFichaAlternativasDissertativaFirebase(self, respostaDissertativa, cont, multiplasRespostas = False):
 
         data = {
             "fechada": False,
-            "multiplasRespostas": False,
+            "multiplasRespostas": multiplasRespostas,
             "resposta": respostaDissertativa
         }
 
