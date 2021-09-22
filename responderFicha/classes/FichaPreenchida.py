@@ -37,12 +37,17 @@ class FichaPreenchida:
 
 
     ## Pronto para salvar no banco nomeDoCampo: DadoParaSalvar
-    def enviarFichaFirebase(self):
+    def enviarFichaFirebase(self, enviandoAlteração = False):
+        if enviandoAlteração == False:
+            modeloFicha = self._modeloFicha
+        else:
+            modeloFicha = enviandoAlteração
+
         data = {#"equipe": self._tituloFicha,
                 "keyFicha": self._tituloFicha,
                 "tituloFicha": self._tituloFicha,
                 "idUsuario": self._idUsuario,
-                "modeloFicha": self._modeloFicha,
+                "modeloFicha": modeloFicha,
                 "data": datetime.datetime.now().strftime("%d/%m/%Y")
         }
         return data

@@ -300,7 +300,7 @@ def alterarFicha(request, fichaSelec):
                                                 listaCategoriaSalvaFicha, fichaSelec)
         # Cria a ficha no banco
         db.child(tabelaBancoFicha).child(objectFichaPreenchida.get_tituloFicha()).set(
-            objectFichaPreenchida.enviarFichaFirebase())
+            objectFichaPreenchida.enviarFichaFirebase(dadosFicha['modeloFicha'])) #### AQUI ESTA MUDANDO O NOME DA FICHA
 
         # Percorre cada categoria
         for categoriaList in listaCategoriaSalvaFicha:
