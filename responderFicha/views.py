@@ -3,7 +3,7 @@ import pandas as pd
 import datetime
 from django.http import HttpResponse
 from LabGRis.decorators import validate_session, getSessionUser
-from LabGRis.funcoesCompartilhadas import criarListaDoBanco, criarListaDoBancoKEY
+from LabGRis.funcoesCompartilhadas import criarListaDoBanco, criarListaDoBancoKEY, identificarAlternativaMarcada
 from LabGRis.pyrebase_settings import db
 from perguntas.classes.Perguntas import Pergunta
 from categorias.classes.Categorias import Categoria
@@ -178,6 +178,8 @@ def preenchendoFicha(request, fichaSelec):
             perguntaForm = request.POST.get(pergunta, 'Pergunta não carregada')
             resposta = ('resposta' + perg)
             respostaForm = request.POST.get(resposta, 'Resposta não carregada')
+            if len(request.POST.getlist(resposta, 'Resposta não carregada')) > 1:
+                respostaForm = request.POST.getlist(resposta, 'Resposta não carregada')
             tituloFicha = 'tituloFicha'
             tituloFichaForm = request.POST.get(tituloFicha, 'Titulo Ficha não carregada')
             tituloCategoriaF = 'tituloCategoria'
@@ -214,11 +216,7 @@ def preenchendoFicha(request, fichaSelec):
                         db.child(tabelaBancoFicha).child(objectFichaPreenchida.get_tituloFicha()).child('categorias').child(contCat).child('perguntas').child(contP).update(objectFichaPreenchida.updateFichaAlternativasDissertativaFirebase(respostaDissertativa, contAlt))
 
                     else:
-                        marcadoComo = False
-                        for pergForm in listaPerguntasForm:  # Salva a resposta (Para alterar resposta fazer algo parecido com este)
-                            if perg.get_tituloPergunta() == pergForm.get_tituloPergunta():
-                                if alter == pergForm.get_tituloAlternativa():
-                                    marcadoComo = True
+                        marcadoComo = identificarAlternativaMarcada(listaPerguntasForm, perg, alter)
                         db.child(tabelaBancoFicha).child(objectFichaPreenchida.get_tituloFicha()).child('categorias').child(contCat).child('perguntas').child(contP).update(objectFichaPreenchida.updateFichaAlternativasFirebase(alter, contAlt, marcadoComo))
 
                     contAlt = contAlt + 1
@@ -259,6 +257,8 @@ def alterarFicha(request, fichaSelec):
             perguntaForm = request.POST.get(pergunta, 'Pergunta não carregada')
             resposta = ('resposta' + perg)
             respostaForm = request.POST.get(resposta, 'Resposta não carregada')
+            if len(request.POST.getlist(resposta, 'Resposta não carregada')) > 1:
+                respostaForm = request.POST.getlist(resposta, 'Resposta não carregada')
             tituloFicha = 'tituloFicha'
             tituloFichaForm = request.POST.get(tituloFicha, 'Titulo Ficha não carregada')
             tituloCategoriaF = 'tituloCategoria'
@@ -330,11 +330,7 @@ def alterarFicha(request, fichaSelec):
                                                                                               contAlt))
 
                     else:
-                        marcadoComo = False
-                        for pergForm in listaPerguntasForm:  # Salva a resposta (Para alterar resposta fazer algo parecido com este)
-                            if perg.get_tituloPergunta() == pergForm.get_tituloPergunta():
-                                if alter == pergForm.get_tituloAlternativa():
-                                    marcadoComo = True
+                        marcadoComo = identificarAlternativaMarcada(listaPerguntasForm, perg, alter)
                         db.child(tabelaBancoFicha).child(objectFichaPreenchida.get_tituloFicha()).child(
                             'categorias').child(contCat).child('perguntas').child(contP).update(
                             objectFichaPreenchida.updateFichaAlternativasFirebase(alter, contAlt, marcadoComo))
