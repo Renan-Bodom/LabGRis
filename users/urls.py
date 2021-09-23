@@ -8,6 +8,7 @@ urlpatterns = [
     path('sair/', views.sair),
     path('listar/', views.listaUsers),
     path('novoUsuario/', views.novoUsuario),
+    path('filaExclusao/', views.filaExclusao),
     path('listar/alterarUsuario/<userAlterar>', views.alterarUsuario),
     path('listar/removerUsuario/<userRemover>', views.removerUsuario),
     path('esquecisenha/', views.esqueciSenha)

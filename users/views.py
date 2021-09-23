@@ -159,12 +159,49 @@ def removerUsuario(request, userRemover):
     data = {}
 
     # Remover informações do banco
-    excluirUser = {'excluirUser': True}
+    excluirUser = {'excluirUser': True,
+                   'data': datetime.datetime.now().strftime('%d/%m/%Y')}
     db.child(bancoUsers).child(userRemover).update(excluirUser)
 
     #db.child('usersParaRemover').update({"userId " + userRemover: userRemover})
 
     return redirect('/usuario/listar/')
+
+
+def filaExclusao(request):
+    data = {}
+
+    # Parte do decorators de login
+    data['SessionUser'] = getSessionUser(request)
+    data['context'] = ""
+
+    #  Carrega usuário já cadastrado
+    usuariosSalvos = db.child(bancoUsers).get()
+    listaUsuarios = []
+    for dadosUser in usuariosSalvos.each():
+        dadosUser2 = dadosUser.val()
+        dadosUser2['key'] = dadosUser.key()
+        # Ocultando usuário marcados com exclusão
+        if dadosUser.val()['excluirUser'] == False:
+            dadosUser2 = None
+        else:
+            listaUsuarios.append(dadosUser2)
+
+    data['listaUsuarios'] = listaUsuarios
+
+    if request.method == "POST":
+        usuario = request.POST.get('userRecuperar', '')
+
+        # Recuperar usuario
+        escreverNoBanco = {'excluirUser': False,
+                           'data': datetime.datetime.now().strftime('%d/%m/%Y')}
+        db.child(bancoUsers).child(usuario).update(escreverNoBanco)
+
+        return redirect('/usuario/filaExclusao/')
+
+    return render(request, "users/filaExclusao.html", data)
+
+
 
 def esqueciSenha(request):
     data = {}

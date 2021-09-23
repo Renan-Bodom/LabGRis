@@ -37,12 +37,17 @@ class FichaPreenchida:
 
 
     ## Pronto para salvar no banco nomeDoCampo: DadoParaSalvar
-    def enviarFichaFirebase(self):
+    def enviarFichaFirebase(self, enviandoAlteração = False):
+        if enviandoAlteração == False:
+            modeloFicha = self._modeloFicha
+        else:
+            modeloFicha = enviandoAlteração
+
         data = {#"equipe": self._tituloFicha,
                 "keyFicha": self._tituloFicha,
                 "tituloFicha": self._tituloFicha,
                 "idUsuario": self._idUsuario,
-                "modeloFicha": self._modeloFicha,
+                "modeloFicha": modeloFicha,
                 "data": datetime.datetime.now().strftime("%d/%m/%Y")
         }
         return data
@@ -57,12 +62,12 @@ class FichaPreenchida:
 
         return data
 
-    def updateFichaPerguntasFirebase(self, pergunta, alternativas, cont):
+    def updateFichaPerguntasFirebase(self, pergunta, alternativas, cont, multiplasRespostas):
 
         data = {
             "perguntas/" + str(cont) + "/": {
                 "fechada": True,
-                "multiplasRespostas": False,
+                "multiplasRespostas": multiplasRespostas,
                 "tituloPergunta": pergunta
                 #"alternativas": alternativas
             }
@@ -82,11 +87,11 @@ class FichaPreenchida:
         return data
 
 
-    def updateFichaAlternativasDissertativaFirebase(self, respostaDissertativa, cont):
+    def updateFichaAlternativasDissertativaFirebase(self, respostaDissertativa, cont, multiplasRespostas = False):
 
         data = {
             "fechada": False,
-            "multiplasRespostas": False,
+            "multiplasRespostas": multiplasRespostas,
             "resposta": respostaDissertativa
         }
 

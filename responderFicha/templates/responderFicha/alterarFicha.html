@@ -27,14 +27,25 @@
                     {% if perg.fechada == False %}
                         <input type="text" id="respostaDissertativa" name="resposta{{ perg.tituloPergunta }}" class="form-control, w-50" value="{{ perg.resposta }}">
                     {% else %}
-                        {% for alt in perg.alternativas %}
-                            {% if alt.resposta == True %}
-                              <input type="radio" id="respostaRadio" name="resposta{{ perg.tituloPergunta }}" value="{{ alt.tituloAlternativa }}" checked>
-                            {% else %}
-                              <input type="radio" id="respostaRadio" name="resposta{{ perg.tituloPergunta }}" value="{{ alt.tituloAlternativa }}">
-                            {% endif %}
-                            {{ alt.tituloAlternativa }}
-                        {% endfor %}
+                        {% if perg.multiplasRespostas == True %}
+                            {% for alt in perg.alternativas %}
+                                {% if alt.resposta == True %}
+                                  <input type="checkbox" id="respostaCheckBox" name="resposta{{ perg.tituloPergunta }}" value="{{ alt.tituloAlternativa }}" checked>
+                                {% else %}
+                                  <input type="checkbox" id="respostaCheckBox" name="resposta{{ perg.tituloPergunta }}" value="{{ alt.tituloAlternativa }}">
+                                {% endif %}
+                                {{ alt.tituloAlternativa }}
+                            {% endfor %}
+                        {% else %}
+                            {% for alt in perg.alternativas %}
+                                {% if alt.resposta == True %}
+                                  <input type="radio" id="respostaRadio" name="resposta{{ perg.tituloPergunta }}" value="{{ alt.tituloAlternativa }}" checked>
+                                {% else %}
+                                  <input type="radio" id="respostaRadio" name="resposta{{ perg.tituloPergunta }}" value="{{ alt.tituloAlternativa }}">
+                                {% endif %}
+                                {{ alt.tituloAlternativa }}
+                            {% endfor %}
+                        {% endif %}
                     {% endif %}
                     </div><br>
                 {% endfor %}

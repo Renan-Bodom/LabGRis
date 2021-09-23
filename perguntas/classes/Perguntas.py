@@ -2,15 +2,22 @@ from .Alternativas import Alternativa
 
 
 class Pergunta(Alternativa):
-    def __init__(self, tituloPergunta, alternativa):
+    def __init__(self, tituloPergunta, alternativa, multiplasRespostas = False):
         self._tituloPergunta = tituloPergunta
         Alternativa.__init__(self, alternativa)
+        self._multiplasRespostas = multiplasRespostas
 
     def get_tituloPergunta(self):
         return self._tituloPergunta
 
     def set_tituloPergunta(self, tituloPerg):
         self._tituloPergunta = tituloPerg
+
+    def get_multiplasRespostas(self):
+        return self._multiplasRespostas
+
+    def set_multiplasRespostas(self, multplaResposta):
+        self._multiplasRespostas = multplaResposta
 
     '''    def get_alternativa(self):
             return self._alternativa
