@@ -19,7 +19,7 @@ def criarListaDoBancoKEY(tabelaDoBanco):
 def identificarAlternativaMarcada(listaPerguntasForm, perg, alter):
     marcadoComo = False
     for pergForm in listaPerguntasForm:
-        if len(pergForm.get_tituloAlternativa()[1]) > 1:  ### Melhorar a descoberta de multiplasRespostas
+        if isinstance(pergForm.get_tituloAlternativa(), list):
             for checkBox in pergForm.get_tituloAlternativa():
                 if perg.get_tituloPergunta() == pergForm.get_tituloPergunta():
                     if alter == checkBox:
