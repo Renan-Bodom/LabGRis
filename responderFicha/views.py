@@ -198,7 +198,9 @@ def preenchendoFicha(request, fichaSelec):
             idTeste = 0
             objectCategoriaPreenchida = Categoria(categoriaList.get_tituloCategoria(), idTeste, categoriaList.get_objectPerguntas())
             # Salva as categorias
-            db.child(tabelaBancoFicha).child(objectFichaPreenchida.get_tituloFicha()).update(objectFichaPreenchida.updateFichaCategoriaFirebase(categoriaList.get_tituloCategoria(), idTeste, contCat))
+            db.child(tabelaBancoFicha).child(objectFichaPreenchida.get_tituloFicha()).update(
+                objectFichaPreenchida.updateFichaCategoriaFirebase(categoriaList.get_tituloCategoria(), idTeste,
+                                                                   contCat))
             contP = 0
             for perg in objectCategoriaPreenchida.get_objectPerguntas():  # Salva as perguntas
                 db.child(tabelaBancoFicha).child(objectFichaPreenchida.get_tituloFicha()).child(
@@ -213,11 +215,16 @@ def preenchendoFicha(request, fichaSelec):
                         for pergForm in listaPerguntasForm:
                             if perg.get_tituloPergunta() == pergForm.get_tituloPergunta():
                                 respostaDissertativa = pergForm.get_tituloAlternativa()
-                        db.child(tabelaBancoFicha).child(objectFichaPreenchida.get_tituloFicha()).child('categorias').child(contCat).child('perguntas').child(contP).update(objectFichaPreenchida.updateFichaAlternativasDissertativaFirebase(respostaDissertativa, contAlt))
+                        db.child(tabelaBancoFicha).child(objectFichaPreenchida.get_tituloFicha()).child(
+                            'categorias').child(contCat).child('perguntas').child(contP).update(
+                            objectFichaPreenchida.updateFichaAlternativasDissertativaFirebase(respostaDissertativa,
+                                                                                              contAlt))
 
                     else:
-                        marcadoComo = identificarAlternativaMarcada(listaPerguntasForm, perg, alter)
-                        db.child(tabelaBancoFicha).child(objectFichaPreenchida.get_tituloFicha()).child('categorias').child(contCat).child('perguntas').child(contP).update(objectFichaPreenchida.updateFichaAlternativasFirebase(alter, contAlt, marcadoComo))
+                        marcadoComo = identificarAlternativaMarcada(listaPerguntasForm, perg, alter)#
+                        db.child(tabelaBancoFicha).child(objectFichaPreenchida.get_tituloFicha()).child(
+                            'categorias').child(contCat).child('perguntas').child(contP).update(
+                            objectFichaPreenchida.updateFichaAlternativasFirebase(alter, contAlt, marcadoComo))
 
                     contAlt = contAlt + 1
 
@@ -313,11 +320,12 @@ def alterarFicha(request, fichaSelec):
                                                                    contCat))
             contP = 0
             for perg in objectCategoriaPreenchida.get_objectPerguntas():  # Salva as perguntas
-                db.child(tabelaBancoFicha).child(objectFichaPreenchida.get_tituloFicha()).child('categorias').child(
-                    contCat).update(objectFichaPreenchida.updateFichaPerguntasFirebase(perg.get_tituloPergunta(),
-                                                                                       perg.get_tituloAlternativa(),
-                                                                                       contP,
-                                                                                       perg.get_multiplasRespostas()))
+                db.child(tabelaBancoFicha).child(objectFichaPreenchida.get_tituloFicha()).child(
+                    'categorias').child(contCat).update(
+                    objectFichaPreenchida.updateFichaPerguntasFirebase(perg.get_tituloPergunta(),
+                                                                       perg.get_tituloAlternativa(),
+                                                                       contP,
+                                                                       perg.get_multiplasRespostas()))
                 contAlt = 0
                 for alter in perg.get_tituloAlternativa():  # Salva as alternativas
                     if alter == "dissertativa":
@@ -330,7 +338,7 @@ def alterarFicha(request, fichaSelec):
                                                                                               contAlt))
 
                     else:
-                        marcadoComo = identificarAlternativaMarcada(listaPerguntasForm, perg, alter)
+                        marcadoComo = identificarAlternativaMarcada(listaPerguntasForm, perg, alter)#
                         db.child(tabelaBancoFicha).child(objectFichaPreenchida.get_tituloFicha()).child(
                             'categorias').child(contCat).child('perguntas').child(contP).update(
                             objectFichaPreenchida.updateFichaAlternativasFirebase(alter, contAlt, marcadoComo))
